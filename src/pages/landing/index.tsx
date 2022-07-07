@@ -1,6 +1,7 @@
 import { Grid, Typography, Box, Button } from "@mui/material";
 
 import ImageGallery from "./imageGallery";
+import Collection from "./Collection";
 
 const Landing = () => {
   return (
@@ -20,6 +21,9 @@ const Landing = () => {
         </Grid>
         <Grid container item xs={12} md={6}>
           <ImageGallery />
+        </Grid>
+        <Grid container item xs={12}>
+          <Collection />
         </Grid>
       </Grid>
     </>
