@@ -55,7 +55,7 @@ export default function DrawerAppBar(props: Props) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav">
+      <AppBar component="nav" style={{background:'linear-gradient(113.49deg, #34385F -30.3%, #181E41 58.12%)'}}>
         <Toolbar>
           <IconButton
             color="inherit"
