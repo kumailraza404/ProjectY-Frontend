@@ -13,6 +13,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
+import AddressBox from "../address-box";
+
 interface Props {
   /**
    * Injected by the documentation to work in an iframe.
@@ -83,6 +85,7 @@ export default function DrawerAppBar(props: Props) {
                 {item}
               </Button>
             ))}
+            <AddressBox />
           </Box>
         </Toolbar>
       </AppBar>
