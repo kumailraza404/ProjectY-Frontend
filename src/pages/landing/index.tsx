@@ -7,14 +7,14 @@ const Landing = () => {
   return (
     <>
       <Grid container>
-        <Grid container item xs={12} md={6}>
+        <Grid container item xs={12} md={6} >
           <Box sx={{ display: "block" }}>
-            <Typography variant="h3">
+            <Typography variant="h3" align="left" color="white">
               Explore, Collect and Sell Premium NFTs on installments
             </Typography>
           </Box>
           <Box sx={{ display: "block" }}>
-            <Typography>
+            <Typography color="white">
               The Best Flexible Plans and Terms designed for you
             </Typography>
           </Box>
