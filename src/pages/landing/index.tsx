@@ -1,9 +1,7 @@
-import { Grid, Typography, Box, Button } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 
 import ImageGallery from "./imageGallery";
 import Collection from "./Collection";
-
-import MyNft from "../mynft";
 
 const Landing = () => {
   return (
@@ -27,7 +25,6 @@ const Landing = () => {
         <Grid container item xs={12}>
           <Collection />
         </Grid>
-        <MyNft />
       </Grid>
     </>
   );

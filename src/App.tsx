@@ -3,16 +3,21 @@ import "./App.css";
 import { Container } from "@mui/material";
 import AppBar from "./components/app-bar";
 import Landing from "./pages/landing";
-// import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
+import MyNft from "./pages/mynft";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <AppBar />
-      <Container>
-        <Landing />
-      </Container>
+      <BrowserRouter>
+        <AppBar />
+        <Container>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/mynft" element={<MyNft />} />
+          </Routes>
+        </Container>
+      </BrowserRouter>
     </div>
   );
 }

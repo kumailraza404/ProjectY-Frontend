@@ -15,6 +15,8 @@ import Button from "@mui/material/Button";
 
 import AddressBox from "../address-box";
 
+import { useNavigate } from "react-router-dom";
+
 interface Props {
   /**
    * Injected by the documentation to work in an iframe.
@@ -24,9 +26,14 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["My NFT", "My Bids"];
+const navItems = [
+  { name: "My NFT", link: "/mynft" },
+  { name: "My Bids", link: "/mybids" },
+];
 
 export default function DrawerAppBar(props: Props) {
+  let navigate = useNavigate();
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -42,9 +49,9 @@ export default function DrawerAppBar(props: Props) {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
+          <ListItem key={item.name} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
+              <ListItemText primary={item.name} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -78,13 +85,18 @@ export default function DrawerAppBar(props: Props) {
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            onClick={() => navigate("/")}
           >
             Project Y
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff", margin: "2px 8px" }}>
-                {item}
+              <Button
+                onClick={() => navigate(item.link)}
+                key={item.name}
+                sx={{ color: "#fff", margin: "2px 8px" }}
+              >
+                {item.name}
               </Button>
             ))}
             <AddressBox />
