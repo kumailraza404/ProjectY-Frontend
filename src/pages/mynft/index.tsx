@@ -19,9 +19,12 @@ const MyNft = () => {
 
   const getUserNFTs = async () => {
     if (accounts) {
+      console.log("fetching user nfts");
       const nfts = await web3.alchemy.getNfts({
-        owner: accounts[0],
+        owner: "0xDAA50a02340cBcFA1a6F4c02765430Ffe411b188",
       });
+      console.log("fetching user nfts", nfts);
+
       setNftsOwned(nfts);
     }
   };
