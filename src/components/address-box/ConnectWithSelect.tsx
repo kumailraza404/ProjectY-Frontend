@@ -128,6 +128,10 @@ export function ConnectWithSelect({
   if (error) {
     return <button onClick={onClick}>Try Again?</button>;
   } else if (isActive) {
+
+    const TruncateAddress = (userAddress: string) => {
+      return userAddress.slice(0,5) + "...." + userAddress.slice(-4)
+    }
     return (
       <Button
         variant="contained"
@@ -139,12 +143,13 @@ export function ConnectWithSelect({
           }
         }}
       >
-        {accounts && accounts[0]}
+        {accounts && TruncateAddress(accounts[0])}
       </Button>
     );
   } else {
     return (
       <Button
+        
         variant="contained"
         onClick={
           isActivating
