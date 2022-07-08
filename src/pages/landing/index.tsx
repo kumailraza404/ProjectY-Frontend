@@ -3,11 +3,13 @@ import { Grid, Typography, Box, Button } from "@mui/material";
 import ImageGallery from "./imageGallery";
 import Collection from "./Collection";
 
+import MyNft from "../mynft";
+
 const Landing = () => {
   return (
     <>
       <Grid container>
-        <Grid container item xs={12} md={6} >
+        <Grid container item xs={12} md={6}>
           <Box sx={{ display: "block" }}>
             <Typography variant="h3" align="left" color="white">
               Explore, Collect and Sell Premium NFTs on installments
@@ -25,6 +27,7 @@ const Landing = () => {
         <Grid container item xs={12}>
           <Collection />
         </Grid>
+        <MyNft />
       </Grid>
     </>
   );
