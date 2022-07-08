@@ -24,7 +24,7 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["My NFT", "My Bids", "Connect Wallet"];
+const navItems = ["My NFT", "My Bids"];
 
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
@@ -57,7 +57,13 @@ export default function DrawerAppBar(props: Props) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav" style={{background:'linear-gradient(113.49deg, #34385F -30.3%, #181E41 58.12%)'}}>
+      <AppBar
+        component="nav"
+        style={{
+          background:
+            "linear-gradient(113.49deg, #34385F -30.3%, #181E41 58.12%)",
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -77,11 +83,7 @@ export default function DrawerAppBar(props: Props) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button
-                variant={item === "Connect Wallet" ? "contained" : "text"}
-                key={item}
-                sx={{ color: "#fff", margin: "2px 8px" }}
-              >
+              <Button key={item} sx={{ color: "#fff", margin: "2px 8px" }}>
                 {item}
               </Button>
             ))}
