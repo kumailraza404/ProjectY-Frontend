@@ -66,7 +66,7 @@ const MyBids = () => {
             color="white"
             textAlign="left"
           >
-            Claimed NFTs
+            On-Going Bids
           </Typography>
         </Grid>
         {nfts.map((nft) => {
@@ -92,7 +92,7 @@ const MyBids = () => {
             color="white"
             textAlign="left"
           >
-            My NFTs
+            Closed Bids
           </Typography>
         </Grid>
         {nfts.map((nft) => {

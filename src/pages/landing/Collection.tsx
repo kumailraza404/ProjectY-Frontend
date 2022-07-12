@@ -26,7 +26,13 @@ const buttonStyleNotSelected = {
   height: "40px",
 };
 
-const Collection = () => {
+interface CollectionProps {
+  setOpenPlaceBidModal(value: boolean): void;
+}
+
+const Collection: React.FunctionComponent<CollectionProps> = ({
+  setOpenPlaceBidModal,
+}) => {
   const [selectCollection, setSelectCollection] = React.useState(0);
   const handleSelection = (index: number) => {
     setSelectCollection(index);
@@ -104,7 +110,7 @@ const Collection = () => {
                 name={nft.name}
                 image={nft.image}
                 buttonText={"Place a bid"}
-                buttonAction={() => console.log("Hi")}
+                buttonAction={() => setOpenPlaceBidModal(true)}
               />
             </Grid>
           );
