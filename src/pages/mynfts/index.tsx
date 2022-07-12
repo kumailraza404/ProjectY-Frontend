@@ -25,7 +25,7 @@ const nfts = [
   { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
 ];
 
-const MyNft = () => {
+const MyNfts = () => {
   // const [nftsOwned, setNftsOwned] = useState<any>();
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
   const [openForSellModal, setOpenForSellModal] = useState(false);
@@ -60,7 +60,12 @@ const MyNft = () => {
     <Grid container>
       <Grid container item>
         <Grid item xs={12}>
-          <Typography variant="h3" color="white">
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            color="white"
+            textAlign="left"
+          >
             Claimed NFTs
           </Typography>
         </Grid>
@@ -79,9 +84,14 @@ const MyNft = () => {
           );
         })}
       </Grid>
-      <Grid container item>
+      <Grid container item sx={{ marginTop: "32px" }}>
         <Grid item xs={12}>
-          <Typography variant="h3" color="white">
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            color="white"
+            textAlign="left"
+          >
             My NFTs
           </Typography>
         </Grid>
@@ -109,4 +119,4 @@ const MyNft = () => {
   );
 };
 
-export default MyNft;
+export default MyNfts;

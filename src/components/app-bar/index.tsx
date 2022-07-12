@@ -32,7 +32,7 @@ interface Props {
 
 const drawerWidth = 240;
 const navItems = [
-  { name: "My NFT", link: "/mynft" },
+  { name: "My NFT", link: "/mynfts" },
   { name: "My Bids", link: "/mybids" },
 ];
 
