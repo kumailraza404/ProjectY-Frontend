@@ -13,6 +13,14 @@ const theme = createTheme({
   typography: {
     fontFamily: ["Poppins", "sans-serif"].join(","),
   },
+  palette: {
+    secondary: {
+      main: '#FFFFFF80'
+    },
+    primary: {
+      main: '#FFFFFF'
+    },
+  }
 });
 
 function App() {

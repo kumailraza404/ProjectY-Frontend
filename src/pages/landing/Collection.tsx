@@ -7,12 +7,12 @@ import NFT3 from "../../assets/dummynft2.png";
 import NftCard from "../../components/nft-card";
 
 const nfts = [
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Dome", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT2 },
 ];
 
 const buttonStyleSelected = {
