@@ -15,12 +15,21 @@ const theme = createTheme({
   },
   palette: {
     secondary: {
-      main: '#FFFFFF80'
+      main: "#FFFFFF80",
     },
     primary: {
-      main: '#FFFFFF'
+      main: "#FFFFFF",
     },
-  }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          color: "#FFFFFF",
+        },
+      },
+    },
+  },
 });
 
 function App() {

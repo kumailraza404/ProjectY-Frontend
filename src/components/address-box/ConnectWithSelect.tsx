@@ -128,13 +128,17 @@ export function ConnectWithSelect({
   if (error) {
     return <button onClick={onClick}>Try Again?</button>;
   } else if (isActive) {
-
     const TruncateAddress = (userAddress: string) => {
-      return userAddress.slice(0,5) + "...." + userAddress.slice(-4)
-    }
+      return userAddress.slice(0, 5) + "...." + userAddress.slice(-4);
+    };
     return (
       <Button
         variant="contained"
+        sx={{
+          background:
+            "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
+          color: "#FFFFFF",
+        }}
         onClick={() => {
           if (connector?.deactivate) {
             void connector.deactivate();
@@ -149,8 +153,12 @@ export function ConnectWithSelect({
   } else {
     return (
       <Button
-        
         variant="contained"
+        sx={{
+          background:
+            "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
+          color: "#FFFFFF",
+        }}
         onClick={
           isActivating
             ? undefined

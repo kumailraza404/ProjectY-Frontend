@@ -11,13 +11,12 @@ const buttonStyleSelected = {
   background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
   height: "40px",
   borderRadius: "12px",
-  
 };
 const buttonStyleNotSelected = {
   background: "rgba(255, 255, 255, 0.1)",
   height: "40px",
   borderRadius: "12px",
-  marginLeft:"20px"
+  marginLeft: "20px",
 };
 
 const Landing = () => {
@@ -50,7 +49,16 @@ const Landing = () => {
             </Typography>
           </Box>
           <Box>
-            <Button style={buttonStyleSelected} variant="contained">
+            <Button
+              style={buttonStyleSelected}
+              variant="contained"
+              color="primary"
+              sx={{
+                background:
+                  "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
+                color: "#FFFFFF",
+              }}
+            >
               Explore Now
             </Button>
             <Button style={buttonStyleNotSelected} variant="contained">

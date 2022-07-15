@@ -9,8 +9,7 @@ import NFT3 from "../../assets/dummynft2.png";
 
 import NftCard from "../../components/nft-card";
 
-import InstallmentModal from "../../components/modals/payInstallment";
-import OpenForSellModal from "../../components/modals/openForSell";
+import ViewBids from "../../components/modals/viewBids";
 
 const { useAccounts } = hooks;
 
@@ -19,16 +18,40 @@ const web3 = createAlchemyWeb3(
 );
 
 const nfts = [
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
+  {
+    owner: "@Johnny",
+    bid: 0.1,
+    name: "Yellow Painting",
+    image: NFT3,
+    sold: false,
+  },
+  {
+    owner: "@Johnny",
+    bid: 0.1,
+    name: "Yellow Painting",
+    image: NFT2,
+    sold: true,
+  },
+  {
+    owner: "@Johnny",
+    bid: 0.1,
+    name: "Yellow Painting",
+    image: NFT3,
+    sold: false,
+  },
+  {
+    owner: "@Johnny",
+    bid: 0.1,
+    name: "Yellow Painting",
+    image: NFT2,
+    sold: false,
+  },
 ];
 
 const MyBids = () => {
   // const [nftsOwned, setNftsOwned] = useState<any>();
-  const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
-  const [openForSellModal, setOpenForSellModal] = useState(false);
+
+  const [openViewBidsModal, setOpenViewBidsModal] = useState(false);
 
   const accounts = useAccounts();
 
@@ -49,11 +72,11 @@ const MyBids = () => {
     }
   };
 
-  const openPayInstallmentModal = () => {
-    setOpenInstallmentModal(true);
+  const withdrawBid = () => {
+    console.log("withdraw your bid");
   };
-  const openSetNftForSellModal = () => {
-    setOpenForSellModal(true);
+  const openViewBidsModalHandler = () => {
+    setOpenViewBidsModal(true);
   };
 
   return (
@@ -66,7 +89,7 @@ const MyBids = () => {
             color="white"
             textAlign="left"
           >
-            On-Going Bids
+            Sent Bids
           </Typography>
         </Grid>
         {nfts.map((nft) => {
@@ -77,8 +100,9 @@ const MyBids = () => {
                 bid={nft.bid}
                 name={nft.name}
                 image={nft.image}
-                buttonText={"Pay Installment"}
-                buttonAction={openPayInstallmentModal}
+                buttonText={"Withdraw Bid"}
+                buttonAction={withdrawBid}
+                buttonDisabled={!nft.sold}
               />
             </Grid>
           );
@@ -92,7 +116,7 @@ const MyBids = () => {
             color="white"
             textAlign="left"
           >
-            Closed Bids
+            Received Bids
           </Typography>
         </Grid>
         {nfts.map((nft) => {
@@ -103,18 +127,14 @@ const MyBids = () => {
                 bid={nft.bid}
                 name={nft.name}
                 image={nft.image}
-                buttonText={"Sell"}
-                buttonAction={openSetNftForSellModal}
+                buttonText={"View Bids"}
+                buttonAction={openViewBidsModalHandler}
               />
             </Grid>
           );
         })}
       </Grid>
-      <InstallmentModal
-        open={openInstallmentModal}
-        setOpen={setOpenInstallmentModal}
-      />
-      <OpenForSellModal open={openForSellModal} setOpen={setOpenForSellModal} />
+      <ViewBids open={openViewBidsModal} setOpen={setOpenViewBidsModal} />
     </Grid>
   );
 };

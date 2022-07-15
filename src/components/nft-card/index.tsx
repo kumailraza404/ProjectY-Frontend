@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import { CardActionArea, Button } from "@mui/material";
 
 interface NFTCardProps {
   owner: string;
@@ -12,6 +12,7 @@ interface NFTCardProps {
   image: string;
   buttonText: string;
   buttonAction(): void;
+  buttonDisabled?: boolean;
 }
 
 const cardStyle = {
@@ -29,6 +30,15 @@ const buttonStyle = {
   height: "40px",
   borderRadius: "10px",
 };
+const buttonStyleDisable = {
+  background: "grey",
+  marginTop: "10px",
+  border: "none",
+  color: "white",
+  fontSize: "18px",
+  height: "40px",
+  borderRadius: "10px",
+};
 
 const NFTCard: React.FunctionComponent<NFTCardProps> = ({
   owner,
@@ -37,6 +47,7 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
   image,
   buttonText,
   buttonAction,
+  buttonDisabled = false,
 }) => {
   return (
     <Card sx={{ maxWidth: 345 }} style={cardStyle}>
@@ -104,9 +115,13 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
             </div>
           </div>
 
-          <button onClick={buttonAction} style={buttonStyle}>
+          <Button
+            disabled={buttonDisabled}
+            onClick={buttonAction}
+            style={buttonDisabled ? buttonStyleDisable : buttonStyle}
+          >
             {buttonText}
-          </button>
+          </Button>
 
           {/* <Typography gutterBottom variant="h5" component="div">
             {name}
