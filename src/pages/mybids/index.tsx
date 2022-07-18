@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import { hooks } from "../../components/address-box/metaMask";
 
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 
 import NFT2 from "../../assets/nft2.png";
 import NFT3 from "../../assets/dummynft2.png";
@@ -16,6 +16,17 @@ const { useAccounts } = hooks;
 const web3 = createAlchemyWeb3(
   "https://eth-mainnet.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
+
+const buttonStyleSelected = {
+  background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
+  width: "90%",
+  height: "40px",
+};
+const buttonStyleNotSelected = {
+  background: "rgba(255, 255, 255, 0.1)",
+  width: "90%",
+  height: "40px",
+};
 
 const nfts = [
   {
@@ -52,8 +63,13 @@ const MyBids = () => {
   // const [nftsOwned, setNftsOwned] = useState<any>();
 
   const [openViewBidsModal, setOpenViewBidsModal] = useState(false);
+  const [selectCollection, setSelectCollection] = useState(0);
 
   const accounts = useAccounts();
+
+  const handleSelection = (index: number) => {
+    setSelectCollection(index);
+  };
 
   useEffect(() => {
     getUserNFTs();
@@ -81,44 +97,33 @@ const MyBids = () => {
 
   return (
     <Grid container>
-      <Grid container item>
-        <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            color="white"
-            textAlign="left"
-          >
-            Sent Bids
-          </Typography>
-        </Grid>
-        {nfts.map((nft) => {
-          return (
-            <Grid item xs={4} mt={5}>
-              <NftCard
-                owner={nft.owner}
-                bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
-                buttonText={"Withdraw Bid"}
-                buttonAction={withdrawBid}
-                buttonDisabled={!nft.sold}
-              />
-            </Grid>
-          );
-        })}
+      <Grid item xs={3}>
+        <Button
+          style={
+            selectCollection === 0
+              ? buttonStyleSelected
+              : buttonStyleNotSelected
+          }
+          variant="contained"
+          onClick={() => handleSelection(0)}
+        >
+          Sent Bids
+        </Button>
       </Grid>
-      <Grid container item sx={{ marginTop: "32px" }}>
-        <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            color="white"
-            textAlign="left"
-          >
-            Received Bids
-          </Typography>
-        </Grid>
+      <Grid item xs={3}>
+        <Button
+          style={
+            selectCollection === 1
+              ? buttonStyleSelected
+              : buttonStyleNotSelected
+          }
+          variant="contained"
+          onClick={() => handleSelection(1)}
+        >
+          Received Bids
+        </Button>
+      </Grid>
+      <Grid container item>
         {nfts.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
@@ -127,8 +132,17 @@ const MyBids = () => {
                 bid={nft.bid}
                 name={nft.name}
                 image={nft.image}
-                buttonText={"View Bids"}
-                buttonAction={openViewBidsModalHandler}
+                buttonText={
+                  selectCollection === 0 ? "Withdraw Bid" : "View Bids"
+                }
+                buttonAction={
+                  selectCollection === 0
+                    ? withdrawBid
+                    : openViewBidsModalHandler
+                }
+                buttonDisabled={
+                  selectCollection === 0 && !nft.sold ? true : false
+                }
               />
             </Grid>
           );

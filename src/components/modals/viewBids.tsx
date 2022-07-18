@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, Typography, Box, Modal, Input, Button } from "@mui/material";
+import { Grid, Typography, Box, Modal, Checkbox, Button } from "@mui/material";
 import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg";
 
@@ -86,18 +86,26 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
           </div>
 
           <Grid container>
-            <Grid container item xs={12} md={7} flexDirection="column">
+            <Grid
+              container
+              item
+              xs={12}
+              md={8}
+              alignContent="center"
+              flexDirection="column"
+            >
               <Typography
                 id="modal-modal-title"
                 fontSize={20}
                 color="primary"
                 mt={"10px"}
                 mb={"20px"}
+                sx={{ fontWeight: "bold" }}
               >
-                On-going Bids
+                Received Bids
               </Typography>
 
-              <Grid style={bidBoxStyle} direction="row">
+              <Grid item style={bidBoxStyle} direction="row">
                 <Typography fontSize={16} color="primary" fontWeight={700}>
                   S.No
                 </Typography>
@@ -113,25 +121,42 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
               </Grid>
 
               {ON_GOING_BIDS_DATA.map((bid, index) => (
-                <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
-                  <Typography fontSize={16} color="primary">
-                    {index}
-                  </Typography>
-                  <Typography fontSize={16} color="primary">
-                    {bid.address}
-                  </Typography>
-                  <Typography fontSize={16} color="primary">
-                    {bid.tp}
-                  </Typography>
-                  <Typography fontSize={16} color="primary">
-                    {bid.bid}
-                  </Typography>
-                </Grid>
+                <>
+                  <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
+                    <Typography fontSize={16} color="primary">
+                      <Checkbox
+                        sx={{
+                          position: "absolute",
+                          left: "0px",
+                          color: "white",
+                          marginTop: "-8px",
+                          marginLeft: "8px",
+                        }}
+                      />
+                      {index}
+                    </Typography>
+                    <Typography fontSize={16} color="primary">
+                      {bid.address}
+                    </Typography>
+                    <Typography fontSize={16} color="primary">
+                      {bid.tp}
+                    </Typography>
+                    <Typography fontSize={16} color="primary">
+                      {bid.bid}
+                    </Typography>
+                  </Grid>
+                </>
               ))}
-
+              <Box
+                fontSize={20}
+                sx={{ color: "white", textAlign: "center", margin: "16px 0px" }}
+                color="Primary"
+              >
+                All Bids Closing In 00:00:00
+              </Box>
               <Button style={buttonStyle}>
                 <Typography fontSize={20} color="Primary">
-                  Accept Bid
+                  Select Bid
                 </Typography>
               </Button>
             </Grid>
@@ -140,7 +165,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
               container
               item
               xs={12}
-              md={5}
+              md={4}
               alignContent="center"
               direction="column"
             >
