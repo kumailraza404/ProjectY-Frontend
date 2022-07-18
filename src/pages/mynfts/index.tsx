@@ -29,11 +29,26 @@ const buttonStyleNotSelected = {
   height: "40px",
 };
 
-const nfts = [
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Yellow Painting", image: NFT2 },
+const claimedNFTs = [
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+];
+
+const myNFTs = [
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
+];
+
+
+const unlistedNFTs = [
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
+  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
 ];
 
 const MyNfts = () => {
@@ -113,7 +128,7 @@ const MyNfts = () => {
         </Button>
       </Grid>
       <Grid container item>
-        {nfts.map((nft) => {
+        {selectCollection === 0 && claimedNFTs.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
               <NftCard
@@ -127,19 +142,8 @@ const MyNfts = () => {
             </Grid>
           );
         })}
-      </Grid>
-      <Grid container item sx={{ marginTop: "32px" }}>
-        <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            color="white"
-            textAlign="left"
-          >
-            My NFTs
-          </Typography>
-        </Grid>
-        {nfts.map((nft) => {
+
+        {selectCollection === 1 && myNFTs.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
               <NftCard
@@ -153,7 +157,23 @@ const MyNfts = () => {
             </Grid>
           );
         })}
+
+        {selectCollection === 2 && unlistedNFTs.map((nft) => {
+          return (
+            <Grid item xs={4} mt={5}>
+              <NftCard
+                owner={nft.owner}
+                bid={nft.bid}
+                name={nft.name}
+                image={nft.image}
+                buttonText={"Withdraw"}
+                buttonAction={()=>console.log("withdrawing amount")}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
+
       <InstallmentModal
         open={openInstallmentModal}
         setOpen={setOpenInstallmentModal}
