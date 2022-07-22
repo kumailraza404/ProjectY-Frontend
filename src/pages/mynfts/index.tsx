@@ -3,6 +3,7 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import { hooks } from "../../components/address-box/metaMask";
 
 import { Grid, Typography, Button } from "@mui/material";
+import WalletNotConnected from "../../components/not-connected";
 
 import NFT2 from "../../assets/nft2.png";
 import NFT3 from "../../assets/dummynft2.png";
@@ -86,6 +87,13 @@ const MyNfts = () => {
     setOpenForSellModal(true);
   };
 
+  const [walletConnected, setWalletConnected] = useState(true);
+
+  if(walletConnected){
+    return <WalletNotConnected />
+  }
+
+  else{
   return (
     <Grid container>
       <Grid item xs={3}>
@@ -180,7 +188,7 @@ const MyNfts = () => {
       />
       <OpenForSellModal open={openForSellModal} setOpen={setOpenForSellModal} />
     </Grid>
-  );
+  );}
 };
 
 export default MyNfts;
