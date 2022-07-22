@@ -13,7 +13,7 @@ import NftCard from "../../components/nft-card";
 import InstallmentModal from "../../components/modals/payInstallment";
 import OpenForSellModal from "../../components/modals/openForSell";
 
-const { useAccounts } = hooks;
+const { useAccounts, useIsActive } = hooks;
 
 const web3 = createAlchemyWeb3(
   "https://eth-mainnet.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
@@ -44,7 +44,6 @@ const myNFTs = [
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
 ];
 
-
 const unlistedNFTs = [
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
@@ -62,6 +61,7 @@ const MyNfts = () => {
   };
 
   const accounts = useAccounts();
+  const isActive = useIsActive();
 
   useEffect(() => {
     getUserNFTs();
@@ -87,108 +87,113 @@ const MyNfts = () => {
     setOpenForSellModal(true);
   };
 
-  const [walletConnected, setWalletConnected] = useState(true);
+  // const [walletConnected, setWalletConnected] = useState(true);
 
-  if(walletConnected){
-    return <WalletNotConnected />
+  if (!isActive) {
+    return <WalletNotConnected />;
+  } else {
+    return (
+      <Grid container>
+        <Grid item xs={3}>
+          <Button
+            style={
+              selectCollection === 0
+                ? buttonStyleSelected
+                : buttonStyleNotSelected
+            }
+            variant="contained"
+            onClick={() => handleSelection(0)}
+          >
+            Claimed NFTs
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            style={
+              selectCollection === 1
+                ? buttonStyleSelected
+                : buttonStyleNotSelected
+            }
+            variant="contained"
+            onClick={() => handleSelection(1)}
+          >
+            My NFTs
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            style={
+              selectCollection === 2
+                ? buttonStyleSelected
+                : buttonStyleNotSelected
+            }
+            variant="contained"
+            onClick={() => handleSelection(2)}
+          >
+            Unlisted NFTs
+          </Button>
+        </Grid>
+        <Grid container item>
+          {selectCollection === 0 &&
+            claimedNFTs.map((nft) => {
+              return (
+                <Grid item xs={4} mt={5}>
+                  <NftCard
+                    owner={nft.owner}
+                    bid={nft.bid}
+                    name={nft.name}
+                    image={nft.image}
+                    buttonText={"Pay Installment"}
+                    buttonAction={openPayInstallmentModal}
+                  />
+                </Grid>
+              );
+            })}
+
+          {selectCollection === 1 &&
+            myNFTs.map((nft) => {
+              return (
+                <Grid item xs={4} mt={5}>
+                  <NftCard
+                    owner={nft.owner}
+                    bid={nft.bid}
+                    name={nft.name}
+                    image={nft.image}
+                    buttonText={"Sell"}
+                    buttonAction={openSetNftForSellModal}
+                  />
+                </Grid>
+              );
+            })}
+
+          {selectCollection === 2 &&
+            unlistedNFTs.map((nft) => {
+              return (
+                <Grid item xs={4} mt={5}>
+                  <NftCard
+                    owner={nft.owner}
+                    bid={nft.bid}
+                    name={nft.name}
+                    image={nft.image}
+                    buttonText={"Withdraw"}
+                    buttonAction={() => console.log("withdrawing amount")}
+                  />
+                </Grid>
+              );
+            })}
+        </Grid>
+
+        <InstallmentModal
+          open={openInstallmentModal}
+          setOpen={setOpenInstallmentModal}
+        />
+        <OpenForSellModal
+          open={openForSellModal}
+          setOpen={setOpenForSellModal}
+        />
+      </Grid>
+    );
   }
-
-  else{
-  return (
-    <Grid container>
-      <Grid item xs={3}>
-        <Button
-          style={
-            selectCollection === 0
-              ? buttonStyleSelected
-              : buttonStyleNotSelected
-          }
-          variant="contained"
-          onClick={() => handleSelection(0)}
-        >
-          Claimed NFTs
-        </Button>
-      </Grid>
-      <Grid item xs={3}>
-        <Button
-          style={
-            selectCollection === 1
-              ? buttonStyleSelected
-              : buttonStyleNotSelected
-          }
-          variant="contained"
-          onClick={() => handleSelection(1)}
-        >
-          My NFTs
-        </Button>
-      </Grid>
-      <Grid item xs={3}>
-        <Button
-          style={
-            selectCollection === 2
-              ? buttonStyleSelected
-              : buttonStyleNotSelected
-          }
-          variant="contained"
-          onClick={() => handleSelection(2)}
-        >
-          Unlisted NFTs
-        </Button>
-      </Grid>
-      <Grid container item>
-        {selectCollection === 0 && claimedNFTs.map((nft) => {
-          return (
-            <Grid item xs={4} mt={5}>
-              <NftCard
-                owner={nft.owner}
-                bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
-                buttonText={"Pay Installment"}
-                buttonAction={openPayInstallmentModal}
-              />
-            </Grid>
-          );
-        })}
-
-        {selectCollection === 1 && myNFTs.map((nft) => {
-          return (
-            <Grid item xs={4} mt={5}>
-              <NftCard
-                owner={nft.owner}
-                bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
-                buttonText={"Sell"}
-                buttonAction={openSetNftForSellModal}
-              />
-            </Grid>
-          );
-        })}
-
-        {selectCollection === 2 && unlistedNFTs.map((nft) => {
-          return (
-            <Grid item xs={4} mt={5}>
-              <NftCard
-                owner={nft.owner}
-                bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
-                buttonText={"Withdraw"}
-                buttonAction={()=>console.log("withdrawing amount")}
-              />
-            </Grid>
-          );
-        })}
-      </Grid>
-
-      <InstallmentModal
-        open={openInstallmentModal}
-        setOpen={setOpenInstallmentModal}
-      />
-      <OpenForSellModal open={openForSellModal} setOpen={setOpenForSellModal} />
-    </Grid>
-  );}
 };
 
 export default MyNfts;
