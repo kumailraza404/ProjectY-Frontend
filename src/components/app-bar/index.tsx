@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
+import { Grid } from "@mui/material";
 
 import Logo from "../../assets/ProjectY.png";
 
@@ -108,6 +109,8 @@ export default function DrawerAppBar(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
+    <Grid container>
+      
     <Box sx={{ display: "flex" }}>
       <AppBar
         component="nav"
@@ -182,5 +185,6 @@ export default function DrawerAppBar(props: Props) {
         <Toolbar />
       </Box>
     </Box>
+    </Grid>
   );
 }
