@@ -61,7 +61,7 @@ export function ConnectWithSelect({
   );
 
   const [desiredChainId, setDesiredChainId] = useState<number>(
-    isNetwork ? 1 : -1
+    isNetwork ? 4 : -1
   );
 
   const switchChain = useCallback(

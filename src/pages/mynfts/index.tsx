@@ -16,7 +16,7 @@ import OpenForSellModal from "../../components/modals/openForSell";
 const { useAccounts, useIsActive } = hooks;
 
 const web3 = createAlchemyWeb3(
-  "https://eth-mainnet.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://eth-rinkeby.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 
 const buttonStyleSelected = {
@@ -52,7 +52,7 @@ const unlistedNFTs = [
 ];
 
 const MyNfts = () => {
-  // const [nftsOwned, setNftsOwned] = useState<any>();
+  const [nftsOwned, setNftsOwned] = useState<any>([]);
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
   const [openForSellModal, setOpenForSellModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
@@ -70,13 +70,11 @@ const MyNfts = () => {
 
   const getUserNFTs = async () => {
     if (accounts) {
-      console.log("fetching user nfts");
-      //   const nfts = await web3.alchemy.getNfts({
-      //     owner: "0xDAA50a02340cBcFA1a6F4c02765430Ffe411b188",
-      //   });
-      //   console.log("fetching user nfts", nfts);
+      const nfts = await web3.alchemy.getNfts({
+        owner: accounts[0],
+      });
 
-      //   setNftsOwned(nfts);
+      setNftsOwned(nfts.ownedNfts);
     }
   };
 
@@ -151,18 +149,20 @@ const MyNfts = () => {
             })}
 
           {selectCollection === 1 &&
-            myNFTs.map((nft) => {
-              return (
+            nftsOwned.map((nft: any) => {
+              return nft.media[0].gateway ? (
                 <Grid item xs={4} mt={5}>
                   <NftCard
                     owner={nft.owner}
                     bid={nft.bid}
-                    name={nft.name}
-                    image={nft.image}
+                    name={nft.title}
+                    image={nft.media[0].gateway}
                     buttonText={"Sell"}
                     buttonAction={openSetNftForSellModal}
                   />
                 </Grid>
+              ) : (
+                <></>
               );
             })}
 
