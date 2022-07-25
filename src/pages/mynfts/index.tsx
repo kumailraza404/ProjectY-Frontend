@@ -16,7 +16,7 @@ import OpenForSellModal from "../../components/modals/openForSell";
 const { useAccounts, useIsActive } = hooks;
 
 const web3 = createAlchemyWeb3(
-  "https://eth-rinkeby.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 
 const buttonStyleSelected = {
@@ -190,6 +190,8 @@ const MyNfts = () => {
         <OpenForSellModal
           open={openForSellModal}
           setOpen={setOpenForSellModal}
+          nftAddress="0x68DE5b77E7d9ECeA761Aa171Ce7625d870539c46"
+          nftId={69}
         />
       </Grid>
     );

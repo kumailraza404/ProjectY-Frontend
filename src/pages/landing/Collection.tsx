@@ -6,6 +6,8 @@ import NFT3 from "../../assets/dummynft2.png";
 
 import NftCard from "../../components/nft-card";
 
+import { Contract } from "@ethersproject/contracts";
+
 const nfts = [
   { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
   { owner: "@Johnny", bid: 0.1, name: "Dome", image: NFT2 },
@@ -37,6 +39,13 @@ const Collection: React.FunctionComponent<CollectionProps> = ({
   const handleSelection = (index: number) => {
     setSelectCollection(index);
   };
+
+  //state nfts
+
+  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+  nfts = protocolContract.getNFtsOpenForSell({ gasVVa: 3500 });
+
+  //useEffect
 
   return (
     <Grid container item xs={12} mt={20}>

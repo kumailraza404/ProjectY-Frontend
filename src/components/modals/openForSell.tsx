@@ -2,12 +2,18 @@ import * as React from "react";
 import { Grid, Typography, Box, Modal, Input, Checkbox } from "@mui/material";
 import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg";
+import { Contract } from "@ethersproject/contracts";
+import { Address, ABI, ERC721ABI } from "../../constants";
+
+import { hooks } from "../../components/address-box/metaMask";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 
 interface OpenForSellProps {
   open: boolean;
   setOpen(value: boolean): void;
+  nftAddress: string;
+  nftId: number;
 }
 
 const buttonStyle = {
@@ -58,9 +64,8 @@ const auctionBoxStyle = {
   borderRadius: "10px",
   padding: "3px 15px",
   display: "flex",
-  justifyContent:"center",
-
-}
+  justifyContent: "center",
+};
 
 const bidInputStyle = {
   height: "30px",
@@ -73,12 +78,46 @@ const bidInputStyle = {
   alignItems: "center",
 };
 
+const { useAccounts, useProvider } = hooks;
+
 const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   open,
   setOpen,
+  nftAddress,
+  nftId,
 }) => {
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
+
+  const provider = useProvider();
+  const nftContract = new Contract(
+    nftAddress,
+    ERC721ABI,
+    provider?.getSigner()
+  );
+  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+
+  const openForBidHandler = async () => {
+    // await nftContract
+    //   .approve(Address, nftId, { gasLimit: 350000 })
+    //   .then((res: any) => {
+    //     console.log("response ==>>", res);
+    //   })
+    //   .catch((err: any) => {
+    //     console.log("error ==>>", err);
+    //   });
+
+    await protocolContract
+      .sell(nftAddress, nftId, 100, 1, {
+        gasLimit: 350000,
+      })
+      .then((res: any) => {
+        console.log("response ==>>", res);
+      })
+      .catch((err: any) => {
+        console.log("error ==>>", err);
+      });
+  };
 
   return (
     <div>
@@ -128,42 +167,77 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
                   direction="column"
                   justifyContent={"center"}
                 >
-                  <Box style={planTypeBoxStyle} sx={{ display: 'flex', flexDirection:"column" }}>
-                    <Box sx={{ display: 'flex', flexDirection:"row", alignItems:"center", borderBottom:"1px solid #FFFFFF33"}}>
-                      <Checkbox sx={{ '& .MuiSvgIcon-root': { color: "#FFFFFF80" } }}/>
-                    <Typography fontSize={16} color="secondary">
-                      1-Time
-                    </Typography>
-                    </Box>
-                    
-                    
-                    <Box sx={{ display: 'flex', flexDirection:"row", alignItems:"center", borderBottom:"1px solid #FFFFFF33"}}>
-                      <Checkbox sx={{ '& .MuiSvgIcon-root': { color: "#FFFFFF80" } }}/>
-                    <Typography fontSize={16} color="secondary">
-                      3-Months
-                    </Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', flexDirection:"row", alignItems:"center" , borderBottom:"1px solid #FFFFFF33" }}>
-                      <Checkbox sx={{ '& .MuiSvgIcon-root': { color: "#FFFFFF80" } }}/>
-                    <Typography fontSize={16} color="secondary">
-                      6-Months
-                    </Typography>
+                  <Box
+                    style={planTypeBoxStyle}
+                    sx={{ display: "flex", flexDirection: "column" }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderBottom: "1px solid #FFFFFF33",
+                      }}
+                    >
+                      <Checkbox
+                        sx={{ "& .MuiSvgIcon-root": { color: "#FFFFFF80" } }}
+                      />
+                      <Typography fontSize={16} color="secondary">
+                        1-Time
+                      </Typography>
                     </Box>
 
-                    <Box sx={{ display: 'flex', flexDirection:"row", alignItems:"center" }}>
-                      <Checkbox sx={{ '& .MuiSvgIcon-root': { color: "#FFFFFF80" } }}/>
-                    <Typography fontSize={16} color="secondary">
-                      9-Months
-                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderBottom: "1px solid #FFFFFF33",
+                      }}
+                    >
+                      <Checkbox
+                        sx={{ "& .MuiSvgIcon-root": { color: "#FFFFFF80" } }}
+                      />
+                      <Typography fontSize={16} color="secondary">
+                        3-Months
+                      </Typography>
                     </Box>
-                    
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderBottom: "1px solid #FFFFFF33",
+                      }}
+                    >
+                      <Checkbox
+                        sx={{ "& .MuiSvgIcon-root": { color: "#FFFFFF80" } }}
+                      />
+                      <Typography fontSize={16} color="secondary">
+                        6-Months
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Checkbox
+                        sx={{ "& .MuiSvgIcon-root": { color: "#FFFFFF80" } }}
+                      />
+                      <Typography fontSize={16} color="secondary">
+                        9-Months
+                      </Typography>
+                    </Box>
                   </Box>
                 </Grid>
               </Grid>
 
-
-              <Grid container mt={"10px"} >
+              <Grid container mt={"10px"}>
                 <Grid container item xs={12} md={3}>
                   <Typography
                     id="modal-modal-title"
@@ -183,7 +257,10 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
                   direction="column"
                   justifyContent={"center"}
                 >
-                  <Box style={auctionBoxStyle} sx={{ display: 'flex', flexDirection:"column" }}>
+                  <Box
+                    style={auctionBoxStyle}
+                    sx={{ display: "flex", flexDirection: "column" }}
+                  >
                     <Typography fontSize={16} color="secondary" ml="10px">
                       7-Days
                     </Typography>
@@ -230,10 +307,11 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
               </Grid>
 
               <Typography fontSize={16} color="secondary" mt="40px">
-                Note: By clicking on Submit, you are agreeing to our Terms and Conditions
+                Note: By clicking on Submit, you are agreeing to our Terms and
+                Conditions
               </Typography>
 
-              <button style={buttonStyle}>
+              <button onClick={openForBidHandler} style={buttonStyle}>
                 <Typography fontSize={20} color="Primary">
                   Submit
                 </Typography>
@@ -254,25 +332,21 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
                   width: "200px",
                   display: "flex",
                   justifyContent: "center",
-                  flexDirection:"column"
+                  flexDirection: "column",
                 }}
               >
-                <Typography fontSize={20} color="primary" fontWeight={700} textAlign="center" >
+                <Typography
+                  fontSize={20}
+                  color="primary"
+                  fontWeight={700}
+                  textAlign="center"
+                >
                   Bored Ape
                 </Typography>
-                <Typography 
-                fontSize={16} color="secondary" fontWeight={500}>
+                <Typography fontSize={16} color="secondary" fontWeight={500}>
                   @Johnny
                 </Typography>
-                
               </Box>
-
-              
-
-              
-
-              
-              
             </Grid>
           </Grid>
         </Box>
