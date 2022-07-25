@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
+import { Contract } from '@ethersproject/contracts'
+import { ABI, Address } from '../../constants'
 import { hooks } from "../../components/address-box/metaMask";
 
 import { Grid, Typography, Button } from "@mui/material";
@@ -13,7 +15,11 @@ import NftCard from "../../components/nft-card";
 import InstallmentModal from "../../components/modals/payInstallment";
 import OpenForSellModal from "../../components/modals/openForSell";
 
-const { useAccounts, useIsActive } = hooks;
+
+
+
+const { useAccounts, useIsActive, useProvider } = hooks;
+
 
 const web3 = createAlchemyWeb3(
   "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
@@ -56,17 +62,13 @@ const MyNfts = () => {
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
   const [openForSellModal, setOpenForSellModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
+  const provider = useProvider();
   const handleSelection = (index: number) => {
     setSelectCollection(index);
   };
 
   const accounts = useAccounts();
   const isActive = useIsActive();
-
-  useEffect(() => {
-    getUserNFTs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts]);
 
   const getUserNFTs = async () => {
     if (accounts) {
@@ -77,6 +79,23 @@ const MyNfts = () => {
       setNftsOwned(nfts.ownedNfts);
     }
   };
+
+  useEffect(() => {
+    getUserNFTs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts]);
+
+  const getListedUserNFTs = async () =>{
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    const userAddress = accounts ? accounts[0] : ""
+    const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {gasLimit: 350000})
+    console.log("listed user nfts", nfts)
+  }
+
+  useEffect(()=>{
+    getListedUserNFTs();
+  },[])
+  
 
   const openPayInstallmentModal = () => {
     setOpenInstallmentModal(true);
@@ -128,7 +147,7 @@ const MyNfts = () => {
             variant="contained"
             onClick={() => handleSelection(2)}
           >
-            Unlisted NFTs
+            Listed NFTs
           </Button>
         </Grid>
         <Grid container item>
@@ -138,7 +157,7 @@ const MyNfts = () => {
                 <Grid item xs={4} mt={5}>
                   <NftCard
                     owner={nft.owner}
-                    bid={nft.bid}
+                    bid={0}
                     name={nft.name}
                     image={nft.image}
                     buttonText={"Pay Installment"}
@@ -154,7 +173,7 @@ const MyNfts = () => {
                 <Grid item xs={4} mt={5}>
                   <NftCard
                     owner={nft.owner}
-                    bid={nft.bid}
+                    bid={0}
                     name={nft.title}
                     image={nft.media[0].gateway}
                     buttonText={"Sell"}

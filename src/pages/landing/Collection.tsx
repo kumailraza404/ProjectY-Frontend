@@ -1,49 +1,62 @@
-import React from "react";
-import { Grid, Typography, Button } from "@mui/material";
+import React from 'react'
+import { Grid, Typography, Button } from '@mui/material'
 
-import NFT2 from "../../assets/nft2.png";
-import NFT3 from "../../assets/dummynft2.png";
+import NFT2 from '../../assets/nft2.png'
+import NFT3 from '../../assets/dummynft2.png'
 
-import NftCard from "../../components/nft-card";
+import NftCard from '../../components/nft-card'
 
-import { Contract } from "@ethersproject/contracts";
+import { Contract } from '@ethersproject/contracts'
+import { ABI, Address } from '../../constants'
+import { hooks } from '../../components/address-box/metaMask'
 
 const nfts = [
-  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Dome", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "CoolApe", image: NFT2 },
-];
+  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
+  { owner: '@Johnny', bid: 0.1, name: 'Dome', image: NFT2 },
+  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
+  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT2 },
+  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
+  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT2 },
+]
 
 const buttonStyleSelected = {
-  background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
-  width: "90%",
-  height: "40px",
-};
+  background: 'linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)',
+  width: '90%',
+  height: '40px',
+}
 const buttonStyleNotSelected = {
-  background: "rgba(255, 255, 255, 0.1)",
-  width: "90%",
-  height: "40px",
-};
+  background: 'rgba(255, 255, 255, 0.1)',
+  width: '90%',
+  height: '40px',
+}
 
 interface CollectionProps {
-  setOpenPlaceBidModal(value: boolean): void;
+  setOpenPlaceBidModal(value: boolean): void
 }
 
 const Collection: React.FunctionComponent<CollectionProps> = ({
   setOpenPlaceBidModal,
 }) => {
-  const [selectCollection, setSelectCollection] = React.useState(0);
+  const [selectCollection, setSelectCollection] = React.useState(0)
   const handleSelection = (index: number) => {
-    setSelectCollection(index);
-  };
-
+    setSelectCollection(index)
+  }
+  const [NFTCollection, setNFTCollection] = React.useState();
   //state nfts
 
-  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-  nfts = protocolContract.getNFtsOpenForSell({ gasVVa: 3500 });
+  const { useProvider } = hooks
+  const provider = useProvider()
+
+  const getAllNFTs = async () => {
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner())
+    const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
+    console.log(nfts, 'check all nfts')
+    setNFTCollection(nfts)
+  }
+
+  React.useEffect(() => {
+    getAllNFTs()
+  }, [])
 
   //useEffect
 
@@ -118,15 +131,15 @@ const Collection: React.FunctionComponent<CollectionProps> = ({
                 bid={nft.bid}
                 name={nft.name}
                 image={nft.image}
-                buttonText={"Place a bid"}
+                buttonText={'Place a bid'}
                 buttonAction={() => setOpenPlaceBidModal(true)}
               />
             </Grid>
-          );
+          )
         })}
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default Collection;
+export default Collection

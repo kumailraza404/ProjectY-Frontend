@@ -80,6 +80,7 @@ export default function DrawerAppBar(props: Props) {
       // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create("width"),
+      color:"white",
       width: "100%",
       [theme.breakpoints.up("md")]: {
         width: "20ch",
@@ -140,11 +141,12 @@ export default function DrawerAppBar(props: Props) {
 
           <Search>
             <SearchIconWrapper>
-              <SearchIcon />
+              <SearchIcon color="primary"/>
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              color="primary"
             />
           </Search>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>

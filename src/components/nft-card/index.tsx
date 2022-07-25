@@ -88,7 +88,7 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
               </Typography>
             </div>
 
-            <div
+            {bid !== 0 && <div
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -112,7 +112,7 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
               >
                 0.005 Matic
               </Typography>
-            </div>
+            </div>}
           </div>
 
           <Button
