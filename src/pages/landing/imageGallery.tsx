@@ -2,9 +2,30 @@ import * as React from "react";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
-import NFT1 from "../../assets/nft1.png";
-import NFT2 from "../../assets/nft2.png";
-import NFT3 from "../../assets/dummynft2.png";
+import {
+    NFT2,
+    NFT3,
+    NFT4,
+    NFT5,
+    NFT6,
+    NFT7,
+    NFT8,
+    NFT9,
+    NFT10,
+    NFT11,
+    NFT12,
+    NFT13,
+    NFT14,
+    NFT15,
+    NFT16,
+    NFT17,
+    NFT18,
+    NFT19,
+    NFT20,
+    NFT21,
+    NFT22,
+    NFT23,
+} from "../../assets/index"
 
 function srcset(image: string, size: number, rows = 1, cols = 1) {
   return {
@@ -42,42 +63,42 @@ export default function QuiltedImageList() {
 
 const itemData = [
   {
-    img: NFT1,
+    img: NFT14,
     title: "Breakfast",
     rows: 2,
     cols: 2,
   },
   {
-    img: NFT2,
+    img: NFT15,
     title: "Burger",
   },
   {
-    img: NFT3,
+    img: NFT16,
     title: "Camera",
   },
   {
-    img: NFT1,
+    img: NFT17,
     title: "Coffee",
     cols: 2,
   },
   {
-    img: NFT2,
+    img: NFT18,
     title: "Hats",
     cols: 2,
   },
   {
-    img: NFT3,
+    img: NFT19,
     title: "Honey",
     author: "@arwinneil",
     rows: 2,
     cols: 2,
   },
   {
-    img: NFT1,
+    img: NFT20,
     title: "Basketball",
   },
   {
-    img: NFT2,
+    img: NFT21,
     title: "Fern",
   },
 ];

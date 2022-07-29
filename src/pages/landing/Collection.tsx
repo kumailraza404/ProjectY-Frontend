@@ -1,8 +1,33 @@
 import React from 'react'
 import { Grid, Typography, Button } from '@mui/material'
+import {
+    NFT1,
+    NFT2,
+    NFT3,
+    NFT4,
+    NFT5,
+    NFT6,
+    NFT7,
+    NFT8,
+    NFT9,
+    NFT10,
+    NFT11,
+    NFT12,
+    NFT13,
+    NFT14,
+    NFT15,
+    NFT16,
+    NFT17,
+    NFT18,
+    NFT19,
+    NFT20,
+    NFT21,
+    NFT22,
+    NFT23,
+} from "../../assets/index"
 
-import NFT2 from '../../assets/nft2.png'
-import NFT3 from '../../assets/dummynft2.png'
+// import NFT2 from '../../assets/nft2.png'
+// import NFT3 from '../../assets/dummynft2.png'
 
 import NftCard from '../../components/nft-card'
 
@@ -41,22 +66,34 @@ const Collection: React.FunctionComponent<CollectionProps> = ({
   const handleSelection = (index: number) => {
     setSelectCollection(index)
   }
-  const [NFTCollection, setNFTCollection] = React.useState();
+  const [NFTCollection, setNFTCollection] = React.useState([
+    { owner: '@0x001...', bid: 0.1, name: '16 Typh', image: NFT1 },
+    { owner: '@0x001...', bid: 0.1, name: 'BTCK DIM', image: NFT2 },
+    { owner: '@0x001...', bid: 0.1, name: 'Blacka', image: NFT3 },
+    { owner: '@0x001...', bid: 0.1, name: 'Coldz', image: NFT4 },
+    { owner: '@0x001...', bid: 0.1, name: 'Deathburger', image: NFT5 },
+    { owner: '@0x001...', bid: 0.1, name: 'Den', image: NFT7 },
+    { owner: '@0x001...', bid: 0.1, name: 'Duong Giap', image: NFT8 },
+    { owner: '@0x001...', bid: 0.1, name: 'First of Chaos', image: NFT9 },
+    { owner: '@0x001...', bid: 0.1, name: 'ICD', image: NFT10 },
+
+  ]
+  );
   //state nfts
 
   const { useProvider } = hooks
   const provider = useProvider()
 
-  const getAllNFTs = async () => {
-    const protocolContract = new Contract(Address, ABI, provider?.getSigner())
-    const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
-    console.log(nfts, 'check all nfts')
-    setNFTCollection(nfts)
-  }
+  // const getAllNFTs = async () => {
+  //   const protocolContract = new Contract(Address, ABI, provider?.getSigner())
+  //   const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
+  //   console.log(nfts, 'check all nfts')
+  //   setNFTCollection(nfts)
+  // }
 
-  React.useEffect(() => {
-    getAllNFTs()
-  }, [])
+  // React.useEffect(() => {
+  //   getAllNFTs()
+  // }, [])
 
   //useEffect
 
@@ -123,7 +160,7 @@ const Collection: React.FunctionComponent<CollectionProps> = ({
         </Button>
       </Grid>
       <Grid container item xs={12}>
-        {nfts.map((nft) => {
+        {NFTCollection.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
               <NftCard

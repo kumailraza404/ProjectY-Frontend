@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, Typography, Box, Modal, Input } from "@mui/material";
+import { Grid, Typography, Box, Modal, Input, Checkbox, Select, MenuItem, SelectChangeEvent, InputLabel } from "@mui/material";
 import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg"
 
@@ -46,6 +46,14 @@ const style = {
   p: 4,
 };
 
+const planTypeBoxStyle = {
+  width: "150px",
+  background: "rgba(255, 255, 255, 0.1)",
+  borderRadius: "10px",
+  padding: "3px 15px",
+  display: "flex",
+};
+
 const bidBoxStyle = {
   width:"90%",
   background: "rgba(122, 92, 147, 0.3)",
@@ -66,12 +74,30 @@ const bidInputStyle ={
   alignItems:"center"
 }
 
+const planTypeStyle ={
+  height:"30px",
+  width:"51%", 
+  background: "rgba(255, 255, 255, 0.1)",
+  borderRadius: "10px",
+  padding:"3px 15px",
+  display:"flex",
+  justifyContent:"center",
+  alignItems:"center",
+  color:"white",
+  border:"none"
+}
+
 const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   open,
   setOpen,
 }) => {
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("")
+  const [age, setAge] = React.useState('1');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setAge(event.target.value as string);
+  };
 
   return (
     <div>
@@ -141,7 +167,37 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
               <Typography  fontSize={20} color="primary" mt={"40px"}>
                       This NFT is set at a <span style={{fontWeight:"700"}}>3-Month</span> Installment Plan
               </Typography>
-              <Grid container mt={"30px"}>
+              <Grid container mt={"30px"} >
+                <Grid container item xs={12} md={3} >
+                  <Typography
+                    id="modal-modal-title"
+                    fontSize={16}
+                    color="primary"
+                    mt={1}
+                  >
+                    Plan Type
+                  </Typography>
+                </Grid>
+
+                <Grid container item xs={12} md={9} >
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={age}
+                    label="Age"
+                    onChange={handleChange}
+                    style={planTypeStyle}
+                  >
+                    <MenuItem value={0} >1-Time Payment</MenuItem>
+                    <MenuItem value={1} >3-Months</MenuItem>
+                    <MenuItem value={2} >6-Months</MenuItem>
+                    <MenuItem value={3} >9-Months</MenuItem>
+                    
+                  </Select>
+                </Grid>
+
+              </Grid>
+              <Grid container mt={"30px"} >
                 <Grid
                   container
                   item

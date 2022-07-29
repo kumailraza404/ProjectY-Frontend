@@ -59,6 +59,7 @@ const unlistedNFTs = [
 
 const MyNfts = () => {
   const [nftsOwned, setNftsOwned] = useState<any>([]);
+  console.log(nftsOwned,"nftsOwned")
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
   const [openForSellModal, setOpenForSellModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
@@ -100,7 +101,11 @@ const MyNfts = () => {
   const openPayInstallmentModal = () => {
     setOpenInstallmentModal(true);
   };
-  const openSetNftForSellModal = () => {
+
+  const [activeNFT, setActiveNFT] = useState({address:"",image:"", title:"", id:0}) 
+  const openSetNftForSellModal = (address:string, image: string, title: string, id:number) => {
+    let stateActiveNFT = {address:address,image:image, title:title, id:id}
+    setActiveNFT(stateActiveNFT)
     setOpenForSellModal(true);
   };
 
@@ -177,7 +182,7 @@ const MyNfts = () => {
                     name={nft.title}
                     image={nft.media[0].gateway}
                     buttonText={"Sell"}
-                    buttonAction={openSetNftForSellModal}
+                    buttonAction={()=>openSetNftForSellModal(nft.contract.address,nft.media[0].gateway,nft.title, nft.id.tokenId)}
                   />
                 </Grid>
               ) : (
@@ -211,6 +216,7 @@ const MyNfts = () => {
           setOpen={setOpenForSellModal}
           nftAddress="0x68DE5b77E7d9ECeA761Aa171Ce7625d870539c46"
           nftId={69}
+          activeNFT={activeNFT}
         />
       </Grid>
     );

@@ -9,11 +9,18 @@ import { hooks } from "../../components/address-box/metaMask";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 
+interface ActiveNFT{
+  address: string;
+  title: string;
+  image: string;
+  id: number;
+}
 interface OpenForSellProps {
   open: boolean;
   setOpen(value: boolean): void;
   nftAddress: string;
   nftId: number;
+  activeNFT: ActiveNFT;
 }
 
 const buttonStyle = {
@@ -85,7 +92,10 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   setOpen,
   nftAddress,
   nftId,
+  activeNFT
 }) => {
+
+  console.log(activeNFT, "activeNFT")
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
 
@@ -99,7 +109,7 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
 
   const openForBidHandler = async () => {
     // await nftContract
-    //   .approve(Address, nftId, { gasLimit: 350000 })
+    //   .approve(Address, activeNFT.id, { gasLimit: 350000 })
     //   .then((res: any) => {
     //     console.log("response ==>>", res);
     //   })
@@ -108,7 +118,7 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
     //   });
 
     await protocolContract
-      .sell(nftAddress, nftId, 100, 1, {
+      .sell(activeNFT.address, activeNFT.id, 100, 1, {
         gasLimit: 350000,
       })
       .then((res: any) => {
@@ -326,10 +336,10 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
               alignContent="center"
               direction="column"
             >
-              <img src={NFT} style={{ height: "300px", width: "300px" }} />
+              <img src={activeNFT.image} style={{ height: "300px", width: "300px", borderRadius:"10px" }} />
               <Box
                 sx={{
-                  width: "200px",
+                  width: "300px",
                   display: "flex",
                   justifyContent: "center",
                   flexDirection: "column",
@@ -341,11 +351,9 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
                   fontWeight={700}
                   textAlign="center"
                 >
-                  Bored Ape
+                  {activeNFT.title}
                 </Typography>
-                <Typography fontSize={16} color="secondary" fontWeight={500}>
-                  @Johnny
-                </Typography>
+                
               </Box>
             </Grid>
           </Grid>
