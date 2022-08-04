@@ -43,12 +43,6 @@ const claimedNFTs = [
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
 ];
 
-const myNFTs = [
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-];
 
 const unlistedNFTs = [
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
@@ -78,6 +72,7 @@ const MyNfts = () => {
       });
 
       setNftsOwned(nfts.ownedNfts);
+      console.log(nfts.ownedNfts, "MY NFTS")
     }
   };
 
@@ -102,8 +97,8 @@ const MyNfts = () => {
     setOpenInstallmentModal(true);
   };
 
-  const [activeNFT, setActiveNFT] = useState({address:"",image:"", title:"", id:0}) 
-  const openSetNftForSellModal = (address:string, image: string, title: string, id:number) => {
+  const [activeNFT, setActiveNFT] = useState({address:"",image:"", title:"", id:"0"}) 
+  const openSetNftForSellModal = (address:string, image: string, title: string, id:string) => {
     let stateActiveNFT = {address:address,image:image, title:title, id:id}
     setActiveNFT(stateActiveNFT)
     setOpenForSellModal(true);
@@ -174,10 +169,11 @@ const MyNfts = () => {
 
           {selectCollection === 1 &&
             nftsOwned.map((nft: any) => {
+              console.log(nft, "wohooo")
               return nft.media[0].gateway ? (
                 <Grid item xs={4} mt={5}>
                   <NftCard
-                    owner={nft.owner}
+                    owner={accounts ? accounts[0] : ""}
                     bid={0}
                     name={nft.title}
                     image={nft.media[0].gateway}
@@ -214,7 +210,7 @@ const MyNfts = () => {
         <OpenForSellModal
           open={openForSellModal}
           setOpen={setOpenForSellModal}
-          nftAddress="0x68DE5b77E7d9ECeA761Aa171Ce7625d870539c46"
+          nftAddress="0x1d5614fDDDb8bA6bc02eCef52f52E04735762fa3"
           nftId={69}
           activeNFT={activeNFT}
         />

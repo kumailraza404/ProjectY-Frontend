@@ -1,6 +1,7 @@
 import * as React from "react";
+import { createAlchemyWeb3, GetNftMetadataParams } from "@alch/alchemy-web3";
+
 import { Grid, Typography, Box, Modal, Input, Checkbox } from "@mui/material";
-import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg";
 import { Contract } from "@ethersproject/contracts";
 import { Address, ABI, ERC721ABI } from "../../constants";
@@ -9,11 +10,13 @@ import { hooks } from "../../components/address-box/metaMask";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 
+
+
 interface ActiveNFT{
   address: string;
   title: string;
   image: string;
-  id: number;
+  id: string;
 }
 interface OpenForSellProps {
   open: boolean;
@@ -95,6 +98,8 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   activeNFT
 }) => {
 
+  
+
   console.log(activeNFT, "activeNFT")
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
@@ -109,7 +114,7 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
 
   const openForBidHandler = async () => {
     // await nftContract
-    //   .approve(Address, activeNFT.id, { gasLimit: 350000 })
+    //   .approve(Address, parseInt(activeNFT.id), { gasLimit: 350000 })
     //   .then((res: any) => {
     //     console.log("response ==>>", res);
     //   })

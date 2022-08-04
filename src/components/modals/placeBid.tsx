@@ -5,13 +5,21 @@ import MaticLogo from "../../assets/matic.svg"
 
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 
+export interface BidsInterface {
+  address: string;
+  tp: string;
+  amount: string;
+}
+interface NftObjectInterface {
+  remainingTime: string;
+  title: string;
+  bids: BidsInterface[]
+}
 interface PlaceBidProps {
   open: boolean;
   setOpen(value: boolean): void;
-  // image: string;
-  // title: string;
-  // remainingTime: string;
-  // highestBid: string;
+  handleClose(value: boolean): void;
+  nftObject? : NftObjectInterface;
 }
 
 
@@ -90,13 +98,28 @@ const planTypeStyle ={
 const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   open,
   setOpen,
+  handleClose
 }) => {
-  const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("")
-  const [age, setAge] = React.useState('1');
+  const [planType, setplanType] = React.useState('1');
+  const [bidPercentage, setbidPercentage] = React.useState(34);
+  React.useEffect(()=>{
+    if(planType == "0"){
+      setbidPercentage(100)
+    }
+    if(planType == "1"){
+      setbidPercentage(34)
+    }
+    if(planType == "2"){
+      setbidPercentage(17.5)
+    }
+    if(planType == "3"){
+      setbidPercentage(12)
+    }
+  },[planType])
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+    setplanType(event.target.value as string);
   };
 
   return (
@@ -165,7 +188,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                 ))
               }
               <Typography  fontSize={20} color="primary" mt={"40px"}>
-                      This NFT is set at a <span style={{fontWeight:"700"}}>3-Month</span> Installment Plan
+                      Propose Your Bid
               </Typography>
               <Grid container mt={"30px"} >
                 <Grid container item xs={12} md={3} >
@@ -173,9 +196,9 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                     id="modal-modal-title"
                     fontSize={16}
                     color="primary"
-                    mt={1}
+                    mt={0}
                   >
-                    Plan Type
+                    Select Plan Type
                   </Typography>
                 </Grid>
 
@@ -183,8 +206,8 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={age}
-                    label="Age"
+                    value={planType}
+                    label="PlanType"
                     onChange={handleChange}
                     style={planTypeStyle}
                   >
@@ -228,7 +251,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                     <img src={MaticLogo} style={{height:"25px", width:"25px"}}/>
                   </Box>
                   <Typography fontSize={12} color="secondary" alignSelf={"center"}>
-                      First Y-Payment: 34 MATIC
+                      First Y-Payment: { isNaN(parseInt(input) * bidPercentage /100)  ? "0" : parseInt(input) * bidPercentage /100} MATIC
                   </Typography>
                 </Grid>
 
@@ -236,7 +259,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
               </Grid>
 
               <Typography fontSize={16} color="secondary" mt="40px">
-                Note: To process this Bid 34% of your Bid i.e. the First Month’s Y-Payment will be locked.
+                Note: To process this Bid {bidPercentage}% of your Bid i.e. the First Month’s Y-Payment will be locked.
               </Typography>
               
               <button style={buttonStyle}>

@@ -4,7 +4,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea, Button } from "@mui/material";
+import { createAlchemyWeb3, GetNftMetadataParams, Nft } from "@alch/alchemy-web3";
+import { Web3Callback } from "@alch/alchemy-web3/dist/esm/types";
+import { Network, Alchemy } from "@alch/alchemy-sdk";
+import { BidsInterface } from "../modals/placeBid";
 
+
+
+const web3 = createAlchemyWeb3(
+  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+);
 interface NFTCardProps {
   owner: string;
   bid: number;
@@ -12,7 +21,10 @@ interface NFTCardProps {
   image: string;
   buttonText: string;
   buttonAction(): void;
+  buttonAction2?(r: string, t: string, b: BidsInterface) : void;
   buttonDisabled?: boolean;
+  nftContractAddress?: string;
+  nftTokenId?: string;
 }
 
 const cardStyle = {
@@ -47,16 +59,37 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
   image,
   buttonText,
   buttonAction,
+  buttonAction2,
   buttonDisabled = false,
+  nftContractAddress,
+  nftTokenId
 }) => {
+  
+
+  const [nftImage, setNftImage] = React.useState(image)
+  
+  const getnftMetadata = async () =>{
+    if(nftContractAddress){
+      const nftMetadata = await web3.alchemy.getNftMetadata({contractAddress:nftContractAddress ? nftContractAddress : "" , 
+      tokenId:nftTokenId ? nftTokenId : ""}); 
+      console.log("nftMetadata", nftMetadata)
+      setNftImage(nftMetadata.metadata?.image ?  nftMetadata.metadata?.image : "")
+    } 
+    
+
+  } 
+
+  React.useEffect(()=>{
+    getnftMetadata()
+  },[])
   return (
     <Card sx={{ maxWidth: 345 }} style={cardStyle}>
       <CardActionArea style={{ padding: 20 }}>
         <CardMedia
           component="img"
           height="340"
-          image={image}
-          alt="green iguana"
+          image={nftImage}
+          alt="Azuki"
           style={{ borderRadius: "10px" }}
         />
         <CardContent style={{ display: "flex", flexDirection: "column" }}>
@@ -75,7 +108,7 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
                 color="rgba(255, 255, 255, 0.5)"
                 style={{ fontSize: "16px", fontWeight: "500" }}
               >
-                {owner}
+                <span>@</span>{owner?.slice(0,6)}...
               </Typography>
 
               <Typography

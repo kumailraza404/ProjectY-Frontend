@@ -34,6 +34,7 @@ import NftCard from '../../components/nft-card'
 import { Contract } from '@ethersproject/contracts'
 import { ABI, Address } from '../../constants'
 import { hooks } from '../../components/address-box/metaMask'
+import PlaceBid, { BidsInterface } from '../../components/modals/placeBid'
 
 const nfts = [
   { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
@@ -55,45 +56,43 @@ const buttonStyleNotSelected = {
   height: '40px',
 }
 
-interface CollectionProps {
-  setOpenPlaceBidModal(value: boolean): void
-}
 
-const Collection: React.FunctionComponent<CollectionProps> = ({
-  setOpenPlaceBidModal,
+
+const Collection: React.FunctionComponent = ({
 }) => {
   const [selectCollection, setSelectCollection] = React.useState(0)
   const handleSelection = (index: number) => {
     setSelectCollection(index)
   }
-  const [NFTCollection, setNFTCollection] = React.useState([
-    { owner: '@0x001...', bid: 0.1, name: '16 Typh', image: NFT1 },
-    { owner: '@0x001...', bid: 0.1, name: 'BTCK DIM', image: NFT2 },
-    { owner: '@0x001...', bid: 0.1, name: 'Blacka', image: NFT3 },
-    { owner: '@0x001...', bid: 0.1, name: 'Coldz', image: NFT4 },
-    { owner: '@0x001...', bid: 0.1, name: 'Deathburger', image: NFT5 },
-    { owner: '@0x001...', bid: 0.1, name: 'Den', image: NFT7 },
-    { owner: '@0x001...', bid: 0.1, name: 'Duong Giap', image: NFT8 },
-    { owner: '@0x001...', bid: 0.1, name: 'First of Chaos', image: NFT9 },
-    { owner: '@0x001...', bid: 0.1, name: 'ICD', image: NFT10 },
+  const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
+  const [NFTCollection, setNFTCollection] = React.useState<any[]>([]);
 
-  ]
-  );
+
+  const [remainingTime, setRemainingTime] = React.useState("")
+  const [title, setTitle] = React.useState("")
+  const [bids, setBids] = React.useState<BidsInterface>()
+  const handleOpenBidModal = (r: string, t : string, b:BidsInterface) =>{
+    setRemainingTime(r)
+    setTitle(t)
+    setBids(b)
+    setOpenPlaceBidModal(true)
+  }
   //state nfts
 
   const { useProvider } = hooks
   const provider = useProvider()
 
-  // const getAllNFTs = async () => {
-  //   const protocolContract = new Contract(Address, ABI, provider?.getSigner())
-  //   const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
-  //   console.log(nfts, 'check all nfts')
-  //   setNFTCollection(nfts)
-  // }
+  const getAllNFTs = async () => {
+    console.log("Get All NFTs running")
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner())
+    const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
+    console.log(nfts, 'check all nfts')
+    setNFTCollection(nfts)
+  }
 
-  // React.useEffect(() => {
-  //   getAllNFTs()
-  // }, [])
+  React.useEffect(() => {
+    getAllNFTs()
+  }, [])
 
   //useEffect
 
@@ -160,21 +159,34 @@ const Collection: React.FunctionComponent<CollectionProps> = ({
         </Button>
       </Grid>
       <Grid container item xs={12}>
-        {NFTCollection.map((nft) => {
+        {NFTCollection && NFTCollection.map((nft:any) => {
+          console.log("indi nft", nft)
           return (
             <Grid item xs={4} mt={5}>
               <NftCard
-                owner={nft.owner}
+                owner={nft.sellerAddress}
                 bid={nft.bid}
                 name={nft.name}
                 image={nft.image}
                 buttonText={'Place a bid'}
-                buttonAction={() => setOpenPlaceBidModal(true)}
+                buttonAction={()=>setOpenPlaceBidModal(true)}
+                buttonAction2={handleOpenBidModal}
+                nftContractAddress={nft.contractAddress}
+                nftTokenId={nft.tokenId}
               />
             </Grid>
           )
         })}
       </Grid>
+      <PlaceBid 
+        open={openPlaceBidModal}
+        setOpen={()=>setOpenPlaceBidModal(true)}
+        handleClose={()=>setOpenPlaceBidModal(false)}
+        nftObject={ {
+        remainingTime:"1", title:"Az", 
+        bids:[{address:"0x0",amount:"5",tp:"80"},{address:"0x0",amount:"5",tp:"80"}]
+      } }
+      />
     </Grid>
   )
 }

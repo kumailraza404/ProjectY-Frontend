@@ -5,7 +5,6 @@ import { useState } from "react";
 import ImageGallery from "./imageGallery";
 import Collection from "./Collection";
 import Numbers from "./numbers";
-import PlaceBidModal from "../../components/modals/placeBid";
 
 const buttonStyleSelected = {
   background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
@@ -20,7 +19,7 @@ const buttonStyleNotSelected = {
 };
 
 const Landing = () => {
-  const [openPlaceBidModal, setOpenPlaceBidModal] = useState(false);
+  
 
   return (
     <>
@@ -71,12 +70,9 @@ const Landing = () => {
           <ImageGallery />
         </Grid>
         <Grid container item xs={12}>
-          <Collection setOpenPlaceBidModal={setOpenPlaceBidModal} />
+          <Collection />
         </Grid>
-        <PlaceBidModal
-          open={openPlaceBidModal}
-          setOpen={setOpenPlaceBidModal}
-        />
+        
       </Grid>
     </>
   );
