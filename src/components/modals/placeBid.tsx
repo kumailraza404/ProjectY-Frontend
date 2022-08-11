@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, Typography, Box, Modal, Input, Checkbox, Select, MenuItem, SelectChangeEvent, InputLabel } from "@mui/material";
+import { Grid, Typography, Box, Modal, Input, Select, MenuItem, SelectChangeEvent, InputLabel, CircularProgress } from "@mui/material";
 import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg"
 
@@ -19,7 +19,12 @@ interface PlaceBidProps {
   open: boolean;
   setOpen(value: boolean): void;
   handleClose(value: boolean): void;
-  nftObject? : NftObjectInterface;
+  name: string;
+  image: string;
+  remainingTime: string;
+  highestBid: string;
+  entryId: string;
+  sellerAddress: string;
 }
 
 
@@ -71,6 +76,15 @@ const bidBoxStyle = {
   justifyContent:"space-around",
   alignItems:"center"
 }
+const loaderDivStyle = {
+  width:"90%",
+  background: "rgba(122, 92, 147, 0.3)",
+  borderRadius: "10px",
+  height:"190px",
+  display:"flex",
+  justifyContent:"space-around",
+  alignItems:"center"
+}
 const bidInputStyle ={
   height:"30px",
   width:"100%", 
@@ -97,12 +111,15 @@ const planTypeStyle ={
 
 const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   open,
-  setOpen,
-  handleClose
+  image,
+  handleClose,
+  name,
+  sellerAddress
 }) => {
   const [input, setInput] = React.useState("")
   const [planType, setplanType] = React.useState('1');
   const [bidPercentage, setbidPercentage] = React.useState(34);
+  const [loader, setLoader] = React.useState(false)
   React.useEffect(()=>{
     if(planType == "0"){
       setbidPercentage(100)
@@ -121,6 +138,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   const handleChange = (event: SelectChangeEvent) => {
     setplanType(event.target.value as string);
   };
+
 
   return (
     <div>
@@ -170,6 +188,12 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
               </Grid>
 
               {
+                loader ?
+                <Grid style={loaderDivStyle} direction="row" mt={"10px"}>
+                  <CircularProgress />
+                </Grid>
+                
+                :
                 ON_GOING_BIDS_DATA.map((bid, index) => (
                   <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
                     <Typography  fontSize={16} color="primary" >
@@ -276,22 +300,26 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
               alignContent="center"
               direction="column"
               >
-              <img src={NFT} style={{height:"200px", width:"200px"}}/>
-              <div style={{width:"200px", display:"flex", justifyContent:"center"}}>
-                  <Typography fontSize={20} color="primary" fontWeight={700} >Bored Ape</Typography>
+              <img 
+              alt="nft"
+              src={image} 
+              style={{height:"370px", width:"370px", borderRadius:"10px"}}/>
+              <div style={{width:"370px", display:"flex", justifyContent:"center", marginTop:"10px"}}>
+                  <Typography fontSize={20} color="primary" fontWeight={700} >{name}</Typography>
               </div>
 
-              <div style={{width:"200px", display:"flex", justifyContent:"space-between"}}>
+              <div style={{width:"370px", display:"flex", justifyContent:"space-between"}}>
                   <Typography fontSize={14} color="primary"  >Remaining Time</Typography>
                   <Typography fontSize={14} color="secondary"  >1.5 Hour</Typography>
               </div>
 
-              <div style={{width:"200px", display:"flex", justifyContent:"space-between"}}>
+              <div style={{width:"370px", display:"flex", justifyContent:"space-between"}}>
                   <Typography fontSize={14} color="primary"  >Highest Bid</Typography>
                   <Typography fontSize={14} color="secondary"  >100 Matic</Typography>
               </div>
-              
+              <Typography fontSize={14} color="secondary"  >@{sellerAddress}</Typography>
             </Grid>
+            
           </Grid>
           
           

@@ -7,7 +7,7 @@ import { CardActionArea, Button } from "@mui/material";
 import { createAlchemyWeb3, GetNftMetadataParams, Nft } from "@alch/alchemy-web3";
 import { Web3Callback } from "@alch/alchemy-web3/dist/esm/types";
 import { Network, Alchemy } from "@alch/alchemy-sdk";
-import { BidsInterface } from "../modals/placeBid";
+import PlaceBid, { BidsInterface } from "../modals/placeBid";
 
 
 
@@ -17,8 +17,6 @@ const web3 = createAlchemyWeb3(
 interface NFTCardProps {
   owner: string;
   bid: number;
-  name: string;
-  image: string;
   buttonText: string;
   buttonAction(): void;
   buttonAction2?(r: string, t: string, b: BidsInterface) : void;
@@ -52,31 +50,27 @@ const buttonStyleDisable = {
   borderRadius: "10px",
 };
 
-const NFTCard: React.FunctionComponent<NFTCardProps> = ({
+const CollectionCard: React.FunctionComponent<NFTCardProps> = ({
   owner,
   bid,
-  name,
-  image,
   buttonText,
-  buttonAction,
-  buttonAction2,
   buttonDisabled = false,
   nftContractAddress,
   nftTokenId
 }) => {
   
-
-  const [nftImage, setNftImage] = React.useState(image)
-  
-  const getnftMetadata = async () =>{
     
+  const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
+
+  const [nftImage, setNftImage] = React.useState("")
+  const [nftName, setNftName] = React.useState("")
+  const getnftMetadata = async () =>{
     if(nftContractAddress){
-      console.log("getNFTmetadata running");
-      console.log(nftContractAddress, nftTokenId, "oo")
       const nftMetadata = await web3.alchemy.getNftMetadata({contractAddress:nftContractAddress ? nftContractAddress : "" , 
       tokenId:nftTokenId ? nftTokenId : ""}); 
       console.log("nftMetadata", nftMetadata)
       setNftImage(nftMetadata.metadata?.image ?  nftMetadata.metadata?.image : "")
+      setNftName(nftMetadata.title)
     } 
     
 
@@ -120,7 +114,7 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
                 color="white"
                 style={{ fontSize: "18px", fontWeight: "700" }}
               >
-                {name}
+                {nftName}
               </Typography>
             </div>
 
@@ -153,23 +147,27 @@ const NFTCard: React.FunctionComponent<NFTCardProps> = ({
 
           <Button
             disabled={buttonDisabled}
-            onClick={buttonAction}
+            onClick={()=>setOpenPlaceBidModal(true)}
             style={buttonDisabled ? buttonStyleDisable : buttonStyle}
           >
             {buttonText}
           </Button>
 
-          {/* <Typography gutterBottom variant="h5" component="div">
-            {name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography> */}
         </CardContent>
       </CardActionArea>
+      <PlaceBid 
+        open={openPlaceBidModal}
+        setOpen={()=>setOpenPlaceBidModal(true)}
+        handleClose={()=>setOpenPlaceBidModal(false)}
+        image={nftImage}
+        remainingTime={"1.5"}
+        highestBid= {": string;"}
+        entryId={" string;"}
+        name={nftName}
+        sellerAddress={owner}
+      />
     </Card>
   );
 };
 
-export default NFTCard;
+export default CollectionCard;

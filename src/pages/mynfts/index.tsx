@@ -44,22 +44,17 @@ const claimedNFTs = [
 ];
 
 
-const unlistedNFTs = [
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
-  { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT2 },
-];
+
 
 const MyNfts = () => {
   const [nftsOwned, setNftsOwned] = useState<any>([]);
-  console.log(nftsOwned,"nftsOwned")
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
   const [openForSellModal, setOpenForSellModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
+  const [userListedNFT, setUserListedNFT] = useState<any[]>([]);
   const provider = useProvider();
   const handleSelection = (index: number) => {
-    setSelectCollection(index);
+    setSelectCollection(index)
   };
 
   const accounts = useAccounts();
@@ -72,13 +67,12 @@ const MyNfts = () => {
       });
 
       setNftsOwned(nfts.ownedNfts);
-      console.log(nfts.ownedNfts, "MY NFTS")
     }
   };
 
+
   useEffect(() => {
     getUserNFTs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts]);
 
   const getListedUserNFTs = async () =>{
@@ -86,6 +80,7 @@ const MyNfts = () => {
     const userAddress = accounts ? accounts[0] : ""
     const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {gasLimit: 350000})
     console.log("listed user nfts", nfts)
+    setUserListedNFT(nfts)
   }
 
   useEffect(()=>{
@@ -187,7 +182,8 @@ const MyNfts = () => {
             })}
 
           {selectCollection === 2 &&
-            unlistedNFTs.map((nft) => {
+            userListedNFT.map((nft) => {
+              console.log(nft.contractAddress, "contract addresssss")
               return (
                 <Grid item xs={4} mt={5}>
                   <NftCard
@@ -195,6 +191,8 @@ const MyNfts = () => {
                     bid={nft.bid}
                     name={nft.name}
                     image={nft.image}
+                    nftContractAddress={nft.contractAddress}
+                    nftTokenId={nft.tokenId}
                     buttonText={"Withdraw"}
                     buttonAction={() => console.log("withdrawing amount")}
                   />

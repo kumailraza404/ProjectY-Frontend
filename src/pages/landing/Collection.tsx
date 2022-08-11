@@ -35,6 +35,7 @@ import { Contract } from '@ethersproject/contracts'
 import { ABI, Address } from '../../constants'
 import { hooks } from '../../components/address-box/metaMask'
 import PlaceBid, { BidsInterface } from '../../components/modals/placeBid'
+import CollectionCard from '../../components/collection-card'
 
 const nfts = [
   { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
@@ -62,6 +63,7 @@ const Collection: React.FunctionComponent = ({
 }) => {
   const [selectCollection, setSelectCollection] = React.useState(0)
   const handleSelection = (index: number) => {
+    getAllNFTs();
     setSelectCollection(index)
   }
   const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
@@ -91,7 +93,7 @@ const Collection: React.FunctionComponent = ({
   }
 
   React.useEffect(() => {
-    getAllNFTs()
+    getAllNFTs();
   }, [])
 
   //useEffect
@@ -99,7 +101,7 @@ const Collection: React.FunctionComponent = ({
   return (
     <Grid container item xs={12} mt={20}>
       <Grid item xs={12} mb={5}>
-        <Typography variant="h3" color="white">
+        <Typography variant="h3" color="white" >
           Collection
         </Typography>
         <Typography variant="h6" color="rgba(255, 255, 255, 0.5)">
@@ -163,11 +165,9 @@ const Collection: React.FunctionComponent = ({
           console.log("indi nft", nft)
           return (
             <Grid item xs={4} mt={5}>
-              <NftCard
+              <CollectionCard
                 owner={nft.sellerAddress}
                 bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
                 buttonText={'Place a bid'}
                 buttonAction={()=>setOpenPlaceBidModal(true)}
                 buttonAction2={handleOpenBidModal}
@@ -178,15 +178,7 @@ const Collection: React.FunctionComponent = ({
           )
         })}
       </Grid>
-      <PlaceBid 
-        open={openPlaceBidModal}
-        setOpen={()=>setOpenPlaceBidModal(true)}
-        handleClose={()=>setOpenPlaceBidModal(false)}
-        nftObject={ {
-        remainingTime:"1", title:"Az", 
-        bids:[{address:"0x0",amount:"5",tp:"80"},{address:"0x0",amount:"5",tp:"80"}]
-      } }
-      />
+
     </Grid>
   )
 }
