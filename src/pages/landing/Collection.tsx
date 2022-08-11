@@ -1,107 +1,67 @@
-import React from 'react'
-import { Grid, Typography, Button } from '@mui/material'
-import {
-    NFT1,
-    NFT2,
-    NFT3,
-    NFT4,
-    NFT5,
-    NFT6,
-    NFT7,
-    NFT8,
-    NFT9,
-    NFT10,
-    NFT11,
-    NFT12,
-    NFT13,
-    NFT14,
-    NFT15,
-    NFT16,
-    NFT17,
-    NFT18,
-    NFT19,
-    NFT20,
-    NFT21,
-    NFT22,
-    NFT23,
-} from "../../assets/index"
+import React from "react";
+import { Grid, Typography, Button } from "@mui/material";
 
-// import NFT2 from '../../assets/nft2.png'
-// import NFT3 from '../../assets/dummynft2.png'
-
-import NftCard from '../../components/nft-card'
-
-import { Contract } from '@ethersproject/contracts'
-import { ABI, Address } from '../../constants'
-import { hooks } from '../../components/address-box/metaMask'
-import PlaceBid, { BidsInterface } from '../../components/modals/placeBid'
-import CollectionCard from '../../components/collection-card'
-
-const nfts = [
-  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
-  { owner: '@Johnny', bid: 0.1, name: 'Dome', image: NFT2 },
-  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
-  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT2 },
-  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT3 },
-  { owner: '@Johnny', bid: 0.1, name: 'CoolApe', image: NFT2 },
-]
+import { Contract } from "@ethersproject/contracts";
+import { ABI, Address } from "../../constants";
+import { hooks } from "../../components/address-box/metaMask";
+import PlaceBid, { BidsInterface } from "../../components/modals/placeBid";
+import CollectionCard from "../../components/collection-card";
 
 const buttonStyleSelected = {
-  background: 'linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)',
-  width: '90%',
-  height: '40px',
-}
+  background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
+  width: "90%",
+  height: "40px",
+};
 const buttonStyleNotSelected = {
-  background: 'rgba(255, 255, 255, 0.1)',
-  width: '90%',
-  height: '40px',
-}
+  background: "rgba(255, 255, 255, 0.1)",
+  width: "90%",
+  height: "40px",
+};
 
-
-
-const Collection: React.FunctionComponent = ({
-}) => {
-  const [selectCollection, setSelectCollection] = React.useState(0)
+const Collection: React.FunctionComponent = ({}) => {
+  const [selectCollection, setSelectCollection] = React.useState(0);
   const handleSelection = (index: number) => {
     getAllNFTs();
-    setSelectCollection(index)
-  }
+    setSelectCollection(index);
+  };
   const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
   const [NFTCollection, setNFTCollection] = React.useState<any[]>([]);
+  const [entryIds, setEntryIds] = React.useState<any[]>([]);
 
-
-  const [remainingTime, setRemainingTime] = React.useState("")
-  const [title, setTitle] = React.useState("")
-  const [bids, setBids] = React.useState<BidsInterface>()
-  const handleOpenBidModal = (r: string, t : string, b:BidsInterface) =>{
-    setRemainingTime(r)
-    setTitle(t)
-    setBids(b)
-    setOpenPlaceBidModal(true)
-  }
+  const [remainingTime, setRemainingTime] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [bids, setBids] = React.useState<BidsInterface>();
+  const handleOpenBidModal = (r: string, t: string, b: BidsInterface) => {
+    setRemainingTime(r);
+    setTitle(t);
+    setBids(b);
+    setOpenPlaceBidModal(true);
+  };
   //state nfts
 
-  const { useProvider } = hooks
-  const provider = useProvider()
+  const { useProvider } = hooks;
+  const provider = useProvider();
+  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
   const getAllNFTs = async () => {
-    console.log("Get All NFTs running")
-    const protocolContract = new Contract(Address, ABI, provider?.getSigner())
-    const nfts = await protocolContract.getNFTsOpenForSale({ gasLimit: 350000 })
-    console.log(nfts, 'check all nfts')
-    setNFTCollection(nfts)
-  }
+    const nfts = await protocolContract.getNFTsOpenForSale({
+      gasLimit: 350000,
+    });
+    setNFTCollection(nfts.nftsOpenForSale_);
+    setEntryIds(nfts.entryIds_);
+    // console.log(nfts, "all nfttttttt");
+  };
 
   React.useEffect(() => {
     getAllNFTs();
-  }, [])
+  }, []);
 
   //useEffect
 
   return (
     <Grid container item xs={12} mt={20}>
       <Grid item xs={12} mb={5}>
-        <Typography variant="h3" color="white" >
+        <Typography variant="h3" color="white">
           Collection
         </Typography>
         <Typography variant="h6" color="rgba(255, 255, 255, 0.5)">
@@ -161,26 +121,27 @@ const Collection: React.FunctionComponent = ({
         </Button>
       </Grid>
       <Grid container item xs={12}>
-        {NFTCollection && NFTCollection.map((nft:any) => {
-          console.log("indi nft", nft)
-          return (
-            <Grid item xs={4} mt={5}>
-              <CollectionCard
-                owner={nft.sellerAddress}
-                bid={nft.bid}
-                buttonText={'Place a bid'}
-                buttonAction={()=>setOpenPlaceBidModal(true)}
-                buttonAction2={handleOpenBidModal}
-                nftContractAddress={nft.contractAddress}
-                nftTokenId={nft.tokenId}
-              />
-            </Grid>
-          )
-        })}
+        {NFTCollection &&
+          NFTCollection.map((nft: any, index: number) => {
+            console.log(entryIds[index], "indi entry id");
+            return (
+              <Grid item xs={4} mt={5}>
+                <CollectionCard
+                  owner={nft.sellerAddress}
+                  bid={nft.bid}
+                  buttonText={"Place a bid"}
+                  buttonAction={() => setOpenPlaceBidModal(true)}
+                  buttonAction2={handleOpenBidModal}
+                  nftContractAddress={nft.contractAddress}
+                  nftTokenId={nft.tokenId}
+                  entryId={entryIds[index]._hex}
+                />
+              </Grid>
+            );
+          })}
       </Grid>
-
     </Grid>
-  )
-}
+  );
+};
 
-export default Collection
+export default Collection;

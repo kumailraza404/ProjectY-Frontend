@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { Contract } from '@ethersproject/contracts'
-import { ABI, Address } from '../../constants'
+import { Contract } from "@ethersproject/contracts";
+import { ABI, Address } from "../../constants";
 import { hooks } from "../../components/address-box/metaMask";
 
 import { Grid, Typography, Button } from "@mui/material";
@@ -15,11 +15,7 @@ import NftCard from "../../components/nft-card";
 import InstallmentModal from "../../components/modals/payInstallment";
 import OpenForSellModal from "../../components/modals/openForSell";
 
-
-
-
 const { useAccounts, useIsActive, useProvider } = hooks;
-
 
 const web3 = createAlchemyWeb3(
   "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
@@ -43,9 +39,6 @@ const claimedNFTs = [
   { owner: "@Johnny", bid: 0.1, name: "Monke", image: NFT3 },
 ];
 
-
-
-
 const MyNfts = () => {
   const [nftsOwned, setNftsOwned] = useState<any>([]);
   const [openInstallmentModal, setOpenInstallmentModal] = useState(false);
@@ -54,7 +47,7 @@ const MyNfts = () => {
   const [userListedNFT, setUserListedNFT] = useState<any[]>([]);
   const provider = useProvider();
   const handleSelection = (index: number) => {
-    setSelectCollection(index)
+    setSelectCollection(index);
   };
 
   const accounts = useAccounts();
@@ -70,32 +63,47 @@ const MyNfts = () => {
     }
   };
 
-
   useEffect(() => {
     getUserNFTs();
   }, [accounts]);
 
-  const getListedUserNFTs = async () =>{
+  const getListedUserNFTs = async () => {
     const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-    const userAddress = accounts ? accounts[0] : ""
-    const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {gasLimit: 350000})
-    console.log("listed user nfts", nfts)
-    setUserListedNFT(nfts)
-  }
+    const userAddress = accounts ? accounts[0] : "";
+    const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {
+      gasLimit: 350000,
+    });
+    console.log("listed user nfts", nfts);
+    setUserListedNFT(nfts.userNFTsOpenForSale_);
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getListedUserNFTs();
-  },[])
-  
+  }, []);
 
   const openPayInstallmentModal = () => {
     setOpenInstallmentModal(true);
   };
 
-  const [activeNFT, setActiveNFT] = useState({address:"",image:"", title:"", id:"0"}) 
-  const openSetNftForSellModal = (address:string, image: string, title: string, id:string) => {
-    let stateActiveNFT = {address:address,image:image, title:title, id:id}
-    setActiveNFT(stateActiveNFT)
+  const [activeNFT, setActiveNFT] = useState({
+    address: "",
+    image: "",
+    title: "",
+    id: "0",
+  });
+  const openSetNftForSellModal = (
+    address: string,
+    image: string,
+    title: string,
+    id: string
+  ) => {
+    let stateActiveNFT = {
+      address: address,
+      image: image,
+      title: title,
+      id: id,
+    };
+    setActiveNFT(stateActiveNFT);
     setOpenForSellModal(true);
   };
 
@@ -164,7 +172,7 @@ const MyNfts = () => {
 
           {selectCollection === 1 &&
             nftsOwned.map((nft: any) => {
-              console.log(nft, "wohooo")
+              console.log(nft, "wohooo");
               return nft.media[0].gateway ? (
                 <Grid item xs={4} mt={5}>
                   <NftCard
@@ -173,7 +181,14 @@ const MyNfts = () => {
                     name={nft.title}
                     image={nft.media[0].gateway}
                     buttonText={"Sell"}
-                    buttonAction={()=>openSetNftForSellModal(nft.contract.address,nft.media[0].gateway,nft.title, nft.id.tokenId)}
+                    buttonAction={() =>
+                      openSetNftForSellModal(
+                        nft.contract.address,
+                        nft.media[0].gateway,
+                        nft.title,
+                        nft.id.tokenId
+                      )
+                    }
                   />
                 </Grid>
               ) : (
@@ -183,7 +198,7 @@ const MyNfts = () => {
 
           {selectCollection === 2 &&
             userListedNFT.map((nft) => {
-              console.log(nft.contractAddress, "contract addresssss")
+              console.log(nft.contractAddress, "contract addresssss");
               return (
                 <Grid item xs={4} mt={5}>
                   <NftCard
