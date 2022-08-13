@@ -67,6 +67,10 @@ const MyNfts = () => {
     getUserNFTs();
   }, [accounts]);
 
+  useEffect(() => {
+    getListedUserNFTs();
+  }, [accounts]);
+
   const getListedUserNFTs = async () => {
     const protocolContract = new Contract(Address, ABI, provider?.getSigner());
     const userAddress = accounts ? accounts[0] : "";
@@ -76,10 +80,6 @@ const MyNfts = () => {
     console.log("listed user nfts", nfts);
     setUserListedNFT(nfts.userNFTsOpenForSale_);
   };
-
-  useEffect(() => {
-    getListedUserNFTs();
-  }, []);
 
   const openPayInstallmentModal = () => {
     setOpenInstallmentModal(true);
@@ -199,20 +199,25 @@ const MyNfts = () => {
           {selectCollection === 2 &&
             userListedNFT.map((nft) => {
               console.log(nft.contractAddress, "contract addresssss");
-              return (
-                <Grid item xs={4} mt={5}>
-                  <NftCard
-                    owner={nft.owner}
-                    bid={nft.bid}
-                    name={nft.name}
-                    image={nft.image}
-                    nftContractAddress={nft.contractAddress}
-                    nftTokenId={nft.tokenId}
-                    buttonText={"Withdraw"}
-                    buttonAction={() => console.log("withdrawing amount")}
-                  />
-                </Grid>
-              );
+              if (
+                nft.contractAddress !==
+                "0x0000000000000000000000000000000000000000"
+              ) {
+                return (
+                  <Grid item xs={4} mt={5}>
+                    <NftCard
+                      owner={nft.owner}
+                      bid={nft.bid}
+                      name={nft.name}
+                      image={nft.image}
+                      nftContractAddress={nft.contractAddress}
+                      nftTokenId={nft.tokenId}
+                      buttonText={"Withdraw"}
+                      buttonAction={() => console.log("withdrawing amount")}
+                    />
+                  </Grid>
+                );
+              }
             })}
         </Grid>
 
@@ -223,8 +228,6 @@ const MyNfts = () => {
         <OpenForSellModal
           open={openForSellModal}
           setOpen={setOpenForSellModal}
-          nftAddress="0x1d5614fDDDb8bA6bc02eCef52f52E04735762fa3"
-          nftId={69}
           activeNFT={activeNFT}
         />
       </Grid>

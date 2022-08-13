@@ -49,7 +49,7 @@ const Collection: React.FunctionComponent = ({}) => {
     });
     setNFTCollection(nfts.nftsOpenForSale_);
     setEntryIds(nfts.entryIds_);
-    // console.log(nfts, "all nfttttttt");
+    console.log(nfts, "all nfttttttt");
   };
 
   React.useEffect(() => {

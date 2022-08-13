@@ -133,6 +133,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
 }) => {
   const [input, setInput] = React.useState("");
   const [planType, setplanType] = React.useState("1");
+  const [bids, setBids] = React.useState<any>();
   const [bidPercentage, setbidPercentage] = React.useState(34);
   const [loader, setLoader] = React.useState(false);
 
@@ -156,16 +157,12 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
   const getAllBids = async () => {
-    console.log(entryId);
-    console.log(parseInt(entryId, 16));
-    const bids = await protocolContract.getAllBidsOnNFT(
-      parseInt(entryId._hex, 16),
-      {
-        gasLimit: 350000,
-      }
-    );
-    console.log(bids, "bids dekho");
-    // setNFTCollection(nfts.nftsOpenForSale_);
+    const id = parseInt(entryId, 16);
+    const bids = await protocolContract.getAllBidsOnNFT(id, {
+      gasLimit: 350000,
+    });
+    console.log(bids, "bids dekho", id);
+    setBids(bids);
   };
 
   React.useEffect(() => {
@@ -231,22 +228,31 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                   <CircularProgress />
                 </Grid>
               ) : (
-                ON_GOING_BIDS_DATA.map((bid, index) => (
-                  <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
-                    <Typography fontSize={16} color="primary">
-                      {index}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.address}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.tp}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.bid}
-                    </Typography>
-                  </Grid>
-                ))
+                bids &&
+                bids.allBidsOnNFT_
+                  .filter(
+                    (bid: any) =>
+                      bid.buyerAddress !==
+                      "0x0000000000000000000000000000000000000000"
+                  )
+                  .map((bid: any, index: number) => (
+                    <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
+                      <Typography fontSize={16} color="primary">
+                        {index}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {bid.buyerAddress.slice(0, 8) + "...."}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {80}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {ethers.utils.formatEther(
+                          parseInt(bid.bidPrice._hex, 16).toString()
+                        )}
+                      </Typography>
+                    </Grid>
+                  ))
               )}
               <Typography fontSize={20} color="primary" mt={"40px"}>
                 Propose Your Bid

@@ -10,9 +10,7 @@ import { hooks } from "../../components/address-box/metaMask";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 
-
-
-interface ActiveNFT{
+interface ActiveNFT {
   address: string;
   title: string;
   image: string;
@@ -21,8 +19,6 @@ interface ActiveNFT{
 interface OpenForSellProps {
   open: boolean;
   setOpen(value: boolean): void;
-  nftAddress: string;
-  nftId: number;
   activeNFT: ActiveNFT;
 }
 
@@ -93,26 +89,37 @@ const { useAccounts, useProvider } = hooks;
 const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   open,
   setOpen,
-  nftAddress,
-  nftId,
-  activeNFT
+  activeNFT,
 }) => {
-
-  
-
-  console.log(activeNFT, "activeNFT")
+  console.log(activeNFT, "activeNFT");
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
 
   const provider = useProvider();
   const nftContract = new Contract(
-    nftAddress,
+    activeNFT.address,
     ERC721ABI,
     provider?.getSigner()
   );
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
   const openForBidHandler = async () => {
+    console.log("chal ja bhai", activeNFT.id, Address);
+    const approvalTx = await nftContract.approve(
+      Address,
+      parseInt(activeNFT.id),
+      { gasLimit: 350000 }
+    );
+    await approvalTx.wait();
+    const submitSell = await protocolContract.sell(
+      activeNFT.address,
+      parseInt(activeNFT.id),
+      100,
+      1,
+      {
+        gasLimit: 350000,
+      }
+    );
     // await nftContract
     //   .approve(Address, parseInt(activeNFT.id), { gasLimit: 350000 })
     //   .then((res: any) => {
@@ -121,17 +128,16 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
     //   .catch((err: any) => {
     //     console.log("error ==>>", err);
     //   });
-
-    await protocolContract
-      .sell(activeNFT.address, activeNFT.id, 100, 1, {
-        gasLimit: 350000,
-      })
-      .then((res: any) => {
-        console.log("response ==>>", res);
-      })
-      .catch((err: any) => {
-        console.log("error ==>>", err);
-      });
+    // await protocolContract
+    //   .sell(activeNFT.address, activeNFT.id, 100, 1, {
+    //     gasLimit: 350000,
+    //   })
+    //   .then((res: any) => {
+    //     console.log("response ==>>", res);
+    //   })
+    //   .catch((err: any) => {
+    //     console.log("error ==>>", err);
+    //   });
   };
 
   return (
@@ -341,7 +347,14 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
               alignContent="center"
               direction="column"
             >
-              <img src={activeNFT.image} style={{ height: "300px", width: "300px", borderRadius:"10px" }} />
+              <img
+                src={activeNFT.image}
+                style={{
+                  height: "300px",
+                  width: "300px",
+                  borderRadius: "10px",
+                }}
+              />
               <Box
                 sx={{
                   width: "300px",
@@ -358,7 +371,6 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
                 >
                   {activeNFT.title}
                 </Typography>
-                
               </Box>
             </Grid>
           </Grid>

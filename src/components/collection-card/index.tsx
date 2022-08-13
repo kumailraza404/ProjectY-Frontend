@@ -60,6 +60,7 @@ const CollectionCard: React.FunctionComponent<NFTCardProps> = ({
   buttonDisabled = false,
   nftContractAddress,
   nftTokenId,
+  entryId,
 }) => {
   const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
 
@@ -167,7 +168,7 @@ const CollectionCard: React.FunctionComponent<NFTCardProps> = ({
         image={nftImage}
         remainingTime={"1.5"}
         highestBid={": string;"}
-        entryId={" string;"}
+        entryId={entryId}
         name={nftName}
         sellerAddress={owner}
       />
