@@ -156,6 +156,28 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   const provider = useProvider();
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
+
+  const placeBidHandler = async () =>{
+    const payableAmount = parseInt(input) * bidPercentage / 100
+    console.log(ethers.BigNumber.from(input).pow(18))
+
+    if(!isNaN(payableAmount)){
+      console.log(payableAmount)
+
+       await protocolContract.bid(
+        ethers.utils.parseEther(input),
+        entryId,
+        parseInt(planType),
+      {
+        gasLimit: 350000,
+      }
+    )
+    }
+    
+
+    
+  }
+
   const getAllBids = async () => {
     const id = parseInt(entryId, 16);
     const bids = await protocolContract.getAllBidsOnNFT(id, {
@@ -338,7 +360,7 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
                 First Month’s Y-Payment will be locked.
               </Typography>
 
-              <button style={buttonStyle}>
+              <button style={buttonStyle} onClick={placeBidHandler}>
                 <Typography fontSize={20} color="Primary">
                   Place Bid
                 </Typography>
