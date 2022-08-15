@@ -4,14 +4,27 @@ import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
+import { Contract } from "@ethersproject/contracts";
+import { ABI, Address } from "../../constants";
+import { hooks } from "../address-box/metaMask";
+import {
+  createAlchemyWeb3,
+  GetNftMetadataParams,
+  Nft,
+} from "@alch/alchemy-web3";
+import { ethers } from "ethers";
 
+const web3 = createAlchemyWeb3(
+  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+);
 interface ViewBidsProps {
   open: boolean;
   setOpen(value: boolean): void;
-  // image: string;
-  // title: string;
-  // remainingTime: string;
-  // highestBid: string;
+  contractAddress: any;
+  tokenId: any;
+  image: any;
+  name: any;
+  entryId:any;
 }
 
 const ON_GOING_BIDS_DATA = [
@@ -68,9 +81,49 @@ const bidInputStyle = {
 const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
   open,
   setOpen,
+  contractAddress,
+  tokenId,
+  image,
+  name,
+  entryId
 }) => {
+  const {useProvider} = hooks;
+  const provider = useProvider();
+  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
+  const [bids, setBids] = React.useState<any>();
+  const [nftImage, setNftImage] = React.useState("");
+  const [nftName, setNftName] = React.useState("");
+
+  console.log("image from view bids of individual nft", nftImage)
+
+  const getMetaData = async () =>{
+
+    const nftMetadata = await web3.alchemy.getNftMetadata({
+        contractAddress: contractAddress ,
+        tokenId: tokenId,
+      });
+      console.log("getMetaData running", nftMetadata)
+      setNftImage(
+        nftMetadata.metadata?.image ? nftMetadata.metadata?.image : ""
+      );
+      setNftName(nftMetadata.title);
+  }
+
+  const getAllBids = async () => {
+    const id = parseInt(entryId, 16);
+    const bids = await protocolContract.getAllBidsOnNFT(id, {
+      gasLimit: 350000,
+    });
+    console.log(bids, "bids dekho from view bids", id);
+    setBids(bids);
+  };
+
+  React.useEffect(() => {
+    getAllBids();
+    getMetaData();
+  }, []);
 
   return (
     <div>
@@ -120,7 +173,35 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                 </Typography>
               </Grid>
 
-              {ON_GOING_BIDS_DATA.map((bid, index) => (
+
+              {
+                bids &&
+                bids.allBidsOnNFT_
+                  .filter(
+                    (bid: any) =>
+                      bid.buyerAddress !==
+                      "0x0000000000000000000000000000000000000000"
+                  )
+                  .map((bid: any, index: number) => (
+                    <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
+                      <Typography fontSize={16} color="primary">
+                        {index}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {bid.buyerAddress.slice(0, 8) + "...."}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {80}
+                      </Typography>
+                      <Typography fontSize={16} color="primary">
+                        {ethers.utils.formatEther(
+                          parseInt(bid.bidPrice._hex, 16).toString()
+                        )}
+                      </Typography>
+                    </Grid>
+                  ))
+              }
+              {/* {ON_GOING_BIDS_DATA.map((bid, index) => (
                 <>
                   <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
                     <Typography fontSize={16} color="primary">
@@ -146,7 +227,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                     </Typography>
                   </Grid>
                 </>
-              ))}
+              ))} */}
               <Box
                 fontSize={20}
                 sx={{ color: "white", textAlign: "center", margin: "16px 0px" }}
@@ -169,7 +250,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
               alignContent="center"
               direction="column"
             >
-              <img src={NFT} style={{ height: "200px", width: "200px" }} />
+              <img src={nftImage} style={{ height: "200px", width: "200px" }} />
               <div
                 style={{
                   width: "200px",
@@ -178,7 +259,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                 }}
               >
                 <Typography fontSize={20} color="primary" fontWeight={700}>
-                  Bored Ape
+                  {nftName}
                 </Typography>
               </div>
 

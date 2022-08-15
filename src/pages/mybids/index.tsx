@@ -10,12 +10,11 @@ import NFT3 from "../../assets/dummynft2.png";
 import NftCard from "../../components/nft-card";
 
 import ViewBids from "../../components/modals/viewBids";
+import { Contract } from "@ethersproject/contracts";
+import { ABI, Address } from "../../constants";
 
-const { useAccounts } = hooks;
+const { useAccounts, useProvider } = hooks;
 
-const web3 = createAlchemyWeb3(
-  "https://eth-mainnet.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
-);
 
 const buttonStyleSelected = {
   background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
@@ -62,6 +61,13 @@ const nfts = [
 const MyBids = () => {
   // const [nftsOwned, setNftsOwned] = useState<any>();
 
+  const provider = useProvider();
+  const [receivedBids, setReceivedBids] = useState<any[]>([]);
+  const [sentBids, setSentBids] = useState<any[]>([]);
+
+  const [entryIds,setEntryIds]= useState<any[]>([])
+
+
   const [openViewBidsModal, setOpenViewBidsModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
 
@@ -71,28 +77,43 @@ const MyBids = () => {
     setSelectCollection(index);
   };
 
-  useEffect(() => {
-    getUserNFTs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts]);
-
-  const getUserNFTs = async () => {
-    if (accounts) {
-      console.log("fetching user nfts");
-      //   const nfts = await web3.alchemy.getNfts({
-      //     owner: "0xDAA50a02340cBcFA1a6F4c02765430Ffe411b188",
-      //   });
-      //   console.log("fetching user nfts", nfts);
-
-      //   setNftsOwned(nfts);
-    }
+  const getReceivedBids = async () => {
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    const userAddress = accounts ? accounts[0] : "";
+    const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {
+      gasLimit: 350000,
+    });
+    console.log(nfts, "from my bids")
+    setReceivedBids(nfts.userNFTsOpenForSale_);
+    setEntryIds(nfts.entryIds_);
   };
+
+  useEffect(()=>{
+    getReceivedBids()
+  },[])
+  
+
+  
 
   const withdrawBid = () => {
     console.log("withdraw your bid");
   };
-  const openViewBidsModalHandler = () => {
+  const [contractAddress,setContractAddress] =useState<any>()
+  const [tokenId,setTokenId] = useState<any>()
+  const [image,setImage] = useState<any>()
+  const [name,setName] = useState<any>()
+  const[entryId, setEntryId] = useState<any>()
+
+  const openViewBidsModalHandler = (ctAddress:any,tId:any,i:any,n:any,eId:any) : void => {
+    // console.log(ctAddress,tId,i,n,eId)
+    // console.log(eId)
+    // console.log(entryIds[eId]._hex)
     setOpenViewBidsModal(true);
+    setContractAddress(ctAddress)
+    setTokenId(tId)
+    setImage(i)
+    setName(n)
+    setEntryId(entryIds[eId]._hex)
   };
 
   return (
@@ -124,7 +145,52 @@ const MyBids = () => {
         </Button>
       </Grid>
       <Grid container item>
-        {nfts.map((nft) => {
+        {selectCollection === 0 &&
+          nfts.map((nft) => {
+          return (
+            <Grid item xs={4} mt={5}>
+              <NftCard
+                owner={nft.owner}
+                bid={nft.bid}
+                name={nft.name}
+                image={nft.image}
+                buttonText={
+                  "Withdraw Bid"
+                }
+                buttonAction={
+                  withdrawBid
+                }
+                buttonDisabled={
+                  selectCollection === 0 && !nft.sold ? true : false
+                }
+              />
+            </Grid>
+          );
+        })}
+        
+        {selectCollection === 1 &&
+            receivedBids.map((nft:any, index:number) => {
+              if (
+                nft.contractAddress !==
+                "0x0000000000000000000000000000000000000000"
+              ) {
+                return (
+                  <Grid item xs={4} mt={5}>
+                    <NftCard
+                      owner={nft.owner}
+                      bid={nft.bid}
+                      name={nft.name}
+                      image={nft.image}
+                      nftContractAddress={nft.contractAddress}
+                      nftTokenId={nft.tokenId}
+                      buttonText={"View Bids"}
+                      buttonAction={()=>openViewBidsModalHandler(nft.contractAddress,nft.tokenId,nft.image,nft.name,index)}
+                    />
+                  </Grid>
+                );
+              }
+            })}
+        {/* {nfts.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
               <NftCard
@@ -146,9 +212,17 @@ const MyBids = () => {
               />
             </Grid>
           );
-        })}
+        })} */}
       </Grid>
-      <ViewBids open={openViewBidsModal} setOpen={setOpenViewBidsModal} />
+      <ViewBids 
+        open={openViewBidsModal} 
+        setOpen={setOpenViewBidsModal} 
+        contractAddress={contractAddress}
+        tokenId={tokenId}
+        image={image}
+        name={name}
+        entryId={entryId}
+      />
     </Grid>
   );
 };
