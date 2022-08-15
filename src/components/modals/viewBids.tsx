@@ -93,22 +93,42 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
   const [bids, setBids] = React.useState<any>();
+  const [bidIds,setBidIds] = React.useState<any>();
   const [nftImage, setNftImage] = React.useState("");
   const [nftName, setNftName] = React.useState("");
 
-  console.log("image from view bids of individual nft", nftImage)
+
+  const [selectBid, setSelectBid] = React.useState("");
+
 
   const getMetaData = async () =>{
 
     const nftMetadata = await web3.alchemy.getNftMetadata({
-        contractAddress: contractAddress ,
+        contractAddress: contractAddress,
         tokenId: tokenId,
       });
-      console.log("getMetaData running", nftMetadata)
       setNftImage(
         nftMetadata.metadata?.image ? nftMetadata.metadata?.image : ""
       );
       setNftName(nftMetadata.title);
+  }
+
+
+  const findIndexOfBid = (bid: any) => {
+    console.log(bids)
+    console.log(bid)
+    console.log(bids.indexOf(bid))
+  }
+  const handleBidSelect =  (bid:any) =>{
+    const index = bids.indexOf(bid);
+    setSelectBid(parseInt(bidIds[index]._hex, 16).toString())
+  }
+
+  const handleSubmitBid = async () =>{
+    const submitBid = await protocolContract.selectBid(
+      selectBid,
+      {gasLimit: 350000}
+      )
   }
 
   const getAllBids = async () => {
@@ -117,8 +137,10 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
       gasLimit: 350000,
     });
     console.log(bids, "bids dekho from view bids", id);
-    setBids(bids);
+    setBids(bids.allBidsOnNFT_);
+    setBidIds(bids.bidIds_);
   };
+  
 
   React.useEffect(() => {
     getAllBids();
@@ -176,7 +198,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
 
               {
                 bids &&
-                bids.allBidsOnNFT_
+                bids
                   .filter(
                     (bid: any) =>
                       bid.buyerAddress !==
@@ -184,6 +206,16 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                   )
                   .map((bid: any, index: number) => (
                     <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
+                      <Checkbox
+                        sx={{
+                          position: "absolute",
+                          left: "0px",
+                          color: "white",
+                          marginTop: "-8px",
+                          marginLeft: "8px",
+                        }}
+                        onClick={()=>handleBidSelect(bid)}
+                      />
                       <Typography fontSize={16} color="primary">
                         {index}
                       </Typography>
@@ -201,33 +233,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                     </Grid>
                   ))
               }
-              {/* {ON_GOING_BIDS_DATA.map((bid, index) => (
-                <>
-                  <Grid style={bidBoxStyle} direction="row" mt={"10px"}>
-                    <Typography fontSize={16} color="primary">
-                      <Checkbox
-                        sx={{
-                          position: "absolute",
-                          left: "0px",
-                          color: "white",
-                          marginTop: "-8px",
-                          marginLeft: "8px",
-                        }}
-                      />
-                      {index}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.address}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.tp}
-                    </Typography>
-                    <Typography fontSize={16} color="primary">
-                      {bid.bid}
-                    </Typography>
-                  </Grid>
-                </>
-              ))} */}
+              
               <Box
                 fontSize={20}
                 sx={{ color: "white", textAlign: "center", margin: "16px 0px" }}
@@ -235,7 +241,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
               >
                 All Bids Closing In 00:00:00
               </Box>
-              <Button style={buttonStyle}>
+              <Button style={buttonStyle} onClick={handleSubmitBid}>
                 <Typography fontSize={20} color="Primary">
                   Select Bid
                 </Typography>
