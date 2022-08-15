@@ -156,28 +156,26 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
   const provider = useProvider();
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
+  const placeBidHandler = async () => {
+    const payableAmount = (parseInt(input) * bidPercentage) / 100;
 
-  const placeBidHandler = async () =>{
-    const payableAmount = parseInt(input) * bidPercentage / 100
-    console.log(ethers.BigNumber.from(input).pow(18))
+    if (!isNaN(payableAmount)) {
+      console.log("hi", ethers.utils.parseEther(input.toString()).toString());
 
-    if(!isNaN(payableAmount)){
-      console.log(payableAmount)
-
-       await protocolContract.bid(
-        ethers.utils.parseEther(input.toString()).toString(),
+      await protocolContract.bid(
         entryId,
+        ethers.utils.parseEther(input.toString()).toString(),
         parseInt(planType),
-      {
-        gasLimit: 350000,
-        value: ethers.utils.parseUnits(bidPercentage.toString(), "ether") 
-      }
-    )
+        {
+          gasLimit: 350000,
+          value: ethers.utils.parseUnits(
+            ((Number(input) * bidPercentage) / 100).toString(),
+            "ether"
+          ),
+        }
+      );
     }
-    
-
-    
-  }
+  };
 
   const getAllBids = async () => {
     const id = parseInt(entryId, 16);
