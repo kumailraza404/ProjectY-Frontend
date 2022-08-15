@@ -165,11 +165,12 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
       console.log(payableAmount)
 
        await protocolContract.bid(
-        ethers.utils.parseEther(input),
+        ethers.utils.parseEther(input.toString()).toString(),
         entryId,
         parseInt(planType),
       {
         gasLimit: 350000,
+        value: ethers.utils.parseUnits(bidPercentage.toString(), "ether") 
       }
     )
     }
