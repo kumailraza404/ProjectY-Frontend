@@ -33,6 +33,7 @@ const theme = createTheme({
 });
 
 function App() {
+  
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
@@ -41,8 +42,8 @@ function App() {
           <Container>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/mynfts" element={<MyNfts />} />
-              <Route path="/mybids" element={<MyBids />} />
+              <Route path="/mynfts" element={<MyNfts />}/>
+              <Route path="/mybids" element={<MyBids />}/>
             </Routes>
             <Footer />
           </Container>

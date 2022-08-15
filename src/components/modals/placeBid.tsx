@@ -175,6 +175,16 @@ const PlaceBid: React.FunctionComponent<PlaceBidProps> = ({
         }
       );
     }
+    const allIds = localStorage.getItem("ids")
+    if(allIds){
+      const newState = [...JSON.parse(allIds)]
+      newState.push(entryId)
+      localStorage.setItem('ids', JSON.stringify(newState));
+    }
+    else{
+      localStorage.setItem('ids', JSON.stringify(entryId));
+    }
+    
   };
 
   const getAllBids = async () => {

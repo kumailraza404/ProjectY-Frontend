@@ -114,11 +114,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
   }
 
 
-  const findIndexOfBid = (bid: any) => {
-    console.log(bids)
-    console.log(bid)
-    console.log(bids.indexOf(bid))
-  }
+  
   const handleBidSelect =  (bid:any) =>{
     const index = bids.indexOf(bid);
     setSelectBid(parseInt(bidIds[index]._hex, 16).toString())

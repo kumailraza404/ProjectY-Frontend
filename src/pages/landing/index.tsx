@@ -18,7 +18,9 @@ const buttonStyleNotSelected = {
   marginLeft: "20px",
 };
 
-const Landing = () => {
+
+
+const Landing : React.FunctionComponent = () => {
   
 
   return (
