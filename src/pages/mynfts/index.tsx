@@ -14,6 +14,7 @@ import NftCard from "../../components/nft-card";
 
 import InstallmentModal from "../../components/modals/payInstallment";
 import OpenForSellModal from "../../components/modals/openForSell";
+import { promises } from "stream";
 
 const { useAccounts, useIsActive, useProvider } = hooks;
 
@@ -45,6 +46,8 @@ const MyNfts = () => {
   const [openForSellModal, setOpenForSellModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
   const [userListedNFT, setUserListedNFT] = useState<any[]>([]);
+  const [userClaimedNFT, setUserClaimedNFT] = useState<any[]>([]);
+
   const provider = useProvider();
   const handleSelection = (index: number) => {
     setSelectCollection(index);
@@ -52,6 +55,18 @@ const MyNfts = () => {
 
   const accounts = useAccounts();
   const isActive = useIsActive();
+
+  useEffect(() => {
+    getUserNFTs();
+  }, [accounts]);
+
+  useEffect(() => {
+    getListedUserNFTs();
+  }, [accounts]);
+
+  useEffect(() => {
+    getClaimedUserNFTs();
+  }, [accounts]);
 
   const getUserNFTs = async () => {
     if (accounts) {
@@ -63,14 +78,6 @@ const MyNfts = () => {
     }
   };
 
-  useEffect(() => {
-    getUserNFTs();
-  }, [accounts]);
-
-  useEffect(() => {
-    getListedUserNFTs();
-  }, [accounts]);
-
   const getListedUserNFTs = async () => {
     const protocolContract = new Contract(Address, ABI, provider?.getSigner());
     const userAddress = accounts ? accounts[0] : "";
@@ -79,6 +86,26 @@ const MyNfts = () => {
     });
     console.log("listed user nfts", nfts);
     setUserListedNFT(nfts.userNFTsOpenForSale_);
+  };
+
+  const getClaimedUserNFTs = async () => {
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    const totalBidIds = parseInt(await protocolContract.getTotalBidIds());
+
+    const buyerInfoPromise = [];
+
+    for (let i = 1; i <= totalBidIds; i++) {
+      buyerInfoPromise.push(protocolContract.getBuyerInfo(i));
+    }
+
+    const buyerInfo = await Promise.all(buyerInfoPromise);
+
+    const claimedNfts = buyerInfo.filter(
+      (bid) =>
+        accounts && bid.isSelected === true && bid.buyerAddress === accounts[0]
+    );
+
+    console.log("claim test ==>>", claimedNfts);
   };
 
   const openPayInstallmentModal = () => {
