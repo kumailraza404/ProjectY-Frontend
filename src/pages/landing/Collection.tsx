@@ -7,6 +7,8 @@ import { hooks } from "../../components/address-box/metaMask";
 import PlaceBid, { BidsInterface } from "../../components/modals/placeBid";
 import CollectionCard from "../../components/collection-card";
 
+import getContract from "../../utils/getContract";
+
 const buttonStyleSelected = {
   background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
   width: "90%",
@@ -21,7 +23,6 @@ const buttonStyleNotSelected = {
 const Collection: React.FunctionComponent = ({}) => {
   const [selectCollection, setSelectCollection] = React.useState(0);
   const handleSelection = (index: number) => {
-    getAllNFTs();
     setSelectCollection(index);
   };
   const [openPlaceBidModal, setOpenPlaceBidModal] = React.useState(false);
@@ -41,22 +42,19 @@ const Collection: React.FunctionComponent = ({}) => {
 
   const { useProvider } = hooks;
   const provider = useProvider();
-  const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-
-  const getAllNFTs = async () => {
-    const nfts = await protocolContract.getNFTsOpenForSale({
-      gasLimit: 350000,
-    });
-    setNFTCollection(nfts.nftsOpenForSale_);
-    setEntryIds(nfts.entryIds_);
-    console.log(nfts, "all nfttttttt");
-  };
 
   React.useEffect(() => {
-    getAllNFTs();
-  }, []);
+    const protocolContract = getContract(provider);
+    const getAllNFTs = async () => {
+      const nfts = await protocolContract.getNFTsOpenForSale({
+        gasLimit: 350000,
+      });
+      setNFTCollection(nfts.nftsOpenForSale_);
+      setEntryIds(nfts.entryIds_);
+    };
 
-  //useEffect
+    getAllNFTs();
+  }, [provider]);
 
   return (
     <Grid container item xs={12} mt={20}>
