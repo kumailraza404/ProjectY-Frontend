@@ -91,8 +91,19 @@ const MyBids = () => {
   useEffect(()=>{
     getReceivedBids()
   },[])
+
+  const getSentBids = () =>{
+    console.log("sent bids")
+    const items = localStorage.getItem('ids')
+    if(items) setSentBids(JSON.parse(items))
+  }
+
+  useEffect(()=>{
+    getSentBids();
+  },[])
   
 
+  console.log(sentBids,"=====>sent bids result")
   
 
   const withdrawBid = () => {
