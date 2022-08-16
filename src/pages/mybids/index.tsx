@@ -10,8 +10,8 @@ import NFT3 from "../../assets/dummynft2.png";
 import NftCard from "../../components/nft-card";
 
 import ViewBids from "../../components/modals/viewBids";
-import { Contract } from "@ethersproject/contracts";
-import { ABI, Address } from "../../constants";
+
+import getContract from "../../utils/getContract";
 
 const { useAccounts, useProvider } = hooks;
 
@@ -73,41 +73,46 @@ const MyBids = () => {
     setSelectCollection(index);
   };
 
-  const getReceivedBids = async () => {
-    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-    const userAddress = accounts ? accounts[0] : "";
-    const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {
-      gasLimit: 350000,
-    });
-    console.log(nfts, "from my bids");
-    setReceivedBids(nfts.userNFTsOpenForSale_);
-    setEntryIds(nfts.entryIds_);
-  };
-
-  const getSentBids = async () => {
-    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-    const totalBidIds = parseInt(await protocolContract.getTotalBidIds());
-
-    const buyerInfoPromise = [];
-
-    for (let i = 1; i <= totalBidIds; i++) {
-      buyerInfoPromise.push(protocolContract.getBuyerInfo(i));
-    }
-
-    const buyerInfo = await Promise.all(buyerInfoPromise);
-
-    const sentBidsResponse = buyerInfo.filter(
-      (bid) =>
-        accounts && bid.isSelected === false && bid.buyerAddress === accounts[0]
-    );
-
-    setSentBids(sentBidsResponse);
-  };
-
   useEffect(() => {
+    //Protocol Contract
+    const protocolContract = getContract(provider);
+
+    //Fetching All Received Bids
+    const getReceivedBids = async () => {
+      const userAddress = accounts ? accounts[0] : "";
+      const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {
+        gasLimit: 350000,
+      });
+      console.log(nfts, "from my bids");
+      setReceivedBids(nfts.userNFTsOpenForSale_);
+      setEntryIds(nfts.entryIds_);
+    };
+
+    //Fetching All Sent Bids
+    const getSentBids = async () => {
+      const totalBidIds = parseInt(await protocolContract.getTotalBidIds());
+
+      const buyerInfoPromise = [];
+
+      for (let i = 1; i <= totalBidIds; i++) {
+        buyerInfoPromise.push(protocolContract.getBuyerInfo(i));
+      }
+
+      const buyerInfo = await Promise.all(buyerInfoPromise);
+
+      const sentBidsResponse = buyerInfo.filter(
+        (bid) =>
+          accounts &&
+          bid.isSelected === false &&
+          bid.buyerAddress === accounts[0]
+      );
+
+      setSentBids(sentBidsResponse);
+    };
+
     getReceivedBids();
     getSentBids();
-  }, []);
+  }, [provider, accounts]);
 
   const withdrawBid = () => {
     console.log("withdraw your bid");
