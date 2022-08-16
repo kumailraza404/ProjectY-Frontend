@@ -105,7 +105,7 @@ const MyNfts = () => {
         accounts && bid.isSelected === true && bid.buyerAddress === accounts[0]
     );
 
-    console.log("claim test ==>>", claimedNfts);
+    setUserClaimedNFT(claimedNfts);
   };
 
   const openPayInstallmentModal = () => {

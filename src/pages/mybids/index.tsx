@@ -15,7 +15,6 @@ import { ABI, Address } from "../../constants";
 
 const { useAccounts, useProvider } = hooks;
 
-
 const buttonStyleSelected = {
   background: "linear-gradient(214.02deg, #B75CFF 6.04%, #671AE4 92.95%)",
   width: "90%",
@@ -59,14 +58,11 @@ const nfts = [
 ];
 
 const MyBids = () => {
-  // const [nftsOwned, setNftsOwned] = useState<any>();
-
   const provider = useProvider();
   const [receivedBids, setReceivedBids] = useState<any[]>([]);
   const [sentBids, setSentBids] = useState<any[]>([]);
 
-  const [entryIds,setEntryIds]= useState<any[]>([])
-
+  const [entryIds, setEntryIds] = useState<any[]>([]);
 
   const [openViewBidsModal, setOpenViewBidsModal] = useState(false);
   const [selectCollection, setSelectCollection] = useState(0);
@@ -83,48 +79,61 @@ const MyBids = () => {
     const nfts = await protocolContract.getUserNFTsOpenForSale(userAddress, {
       gasLimit: 350000,
     });
-    console.log(nfts, "from my bids")
+    console.log(nfts, "from my bids");
     setReceivedBids(nfts.userNFTsOpenForSale_);
     setEntryIds(nfts.entryIds_);
   };
 
-  useEffect(()=>{
-    getReceivedBids()
-  },[])
+  const getSentBids = async () => {
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    const totalBidIds = parseInt(await protocolContract.getTotalBidIds());
 
-  const getSentBids = () =>{
-    console.log("sent bids")
-    const items = localStorage.getItem('ids')
-    if(items) setSentBids(JSON.parse(items))
-  }
+    const buyerInfoPromise = [];
 
-  useEffect(()=>{
+    for (let i = 1; i <= totalBidIds; i++) {
+      buyerInfoPromise.push(protocolContract.getBuyerInfo(i));
+    }
+
+    const buyerInfo = await Promise.all(buyerInfoPromise);
+
+    const sentBidsResponse = buyerInfo.filter(
+      (bid) =>
+        accounts && bid.isSelected === false && bid.buyerAddress === accounts[0]
+    );
+
+    setSentBids(sentBidsResponse);
+  };
+
+  useEffect(() => {
+    getReceivedBids();
     getSentBids();
-  },[])
-  
-
-  console.log(sentBids,"=====>sent bids result")
-  
+  }, []);
 
   const withdrawBid = () => {
     console.log("withdraw your bid");
   };
-  const [contractAddress,setContractAddress] =useState<any>()
-  const [tokenId,setTokenId] = useState<any>()
-  const [image,setImage] = useState<any>()
-  const [name,setName] = useState<any>()
-  const[entryId, setEntryId] = useState<any>()
+  const [contractAddress, setContractAddress] = useState<any>();
+  const [tokenId, setTokenId] = useState<any>();
+  const [image, setImage] = useState<any>();
+  const [name, setName] = useState<any>();
+  const [entryId, setEntryId] = useState<any>();
 
-  const openViewBidsModalHandler = (ctAddress:any,tId:any,i:any,n:any,eId:any) : void => {
+  const openViewBidsModalHandler = (
+    ctAddress: any,
+    tId: any,
+    i: any,
+    n: any,
+    eId: any
+  ): void => {
     // console.log(ctAddress,tId,i,n,eId)
     // console.log(eId)
     // console.log(entryIds[eId]._hex)
     setOpenViewBidsModal(true);
-    setContractAddress(ctAddress)
-    setTokenId(tId)
-    setImage(i)
-    setName(n)
-    setEntryId(entryIds[eId]._hex)
+    setContractAddress(ctAddress);
+    setTokenId(tId);
+    setImage(i);
+    setName(n);
+    setEntryId(entryIds[eId]._hex);
   };
 
   return (
@@ -158,49 +167,53 @@ const MyBids = () => {
       <Grid container item>
         {selectCollection === 0 &&
           nfts.map((nft) => {
-          return (
-            <Grid item xs={4} mt={5}>
-              <NftCard
-                owner={nft.owner}
-                bid={nft.bid}
-                name={nft.name}
-                image={nft.image}
-                buttonText={
-                  "Withdraw Bid"
-                }
-                buttonAction={
-                  withdrawBid
-                }
-                buttonDisabled={
-                  selectCollection === 0 && !nft.sold ? true : false
-                }
-              />
-            </Grid>
-          );
-        })}
-        
+            return (
+              <Grid item xs={4} mt={5}>
+                <NftCard
+                  owner={nft.owner}
+                  bid={nft.bid}
+                  name={nft.name}
+                  image={nft.image}
+                  buttonText={"Withdraw Bid"}
+                  buttonAction={withdrawBid}
+                  buttonDisabled={
+                    selectCollection === 0 && !nft.sold ? true : false
+                  }
+                />
+              </Grid>
+            );
+          })}
+
         {selectCollection === 1 &&
-            receivedBids.map((nft:any, index:number) => {
-              if (
-                nft.contractAddress !==
-                "0x0000000000000000000000000000000000000000"
-              ) {
-                return (
-                  <Grid item xs={4} mt={5}>
-                    <NftCard
-                      owner={nft.owner}
-                      bid={nft.bid}
-                      name={nft.name}
-                      image={nft.image}
-                      nftContractAddress={nft.contractAddress}
-                      nftTokenId={nft.tokenId}
-                      buttonText={"View Bids"}
-                      buttonAction={()=>openViewBidsModalHandler(nft.contractAddress,nft.tokenId,nft.image,nft.name,index)}
-                    />
-                  </Grid>
-                );
-              }
-            })}
+          receivedBids.map((nft: any, index: number) => {
+            if (
+              nft.contractAddress !==
+              "0x0000000000000000000000000000000000000000"
+            ) {
+              return (
+                <Grid item xs={4} mt={5}>
+                  <NftCard
+                    owner={nft.owner}
+                    bid={nft.bid}
+                    name={nft.name}
+                    image={nft.image}
+                    nftContractAddress={nft.contractAddress}
+                    nftTokenId={nft.tokenId}
+                    buttonText={"View Bids"}
+                    buttonAction={() =>
+                      openViewBidsModalHandler(
+                        nft.contractAddress,
+                        nft.tokenId,
+                        nft.image,
+                        nft.name,
+                        index
+                      )
+                    }
+                  />
+                </Grid>
+              );
+            }
+          })}
         {/* {nfts.map((nft) => {
           return (
             <Grid item xs={4} mt={5}>
@@ -225,9 +238,9 @@ const MyBids = () => {
           );
         })} */}
       </Grid>
-      <ViewBids 
-        open={openViewBidsModal} 
-        setOpen={setOpenViewBidsModal} 
+      <ViewBids
+        open={openViewBidsModal}
+        setOpen={setOpenViewBidsModal}
         contractAddress={contractAddress}
         tokenId={tokenId}
         image={image}
