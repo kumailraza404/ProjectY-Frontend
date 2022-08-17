@@ -5,7 +5,9 @@ import MaticLogo from "../../assets/matic.svg";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
+import { ABI, Address } from "../../constants";
+import { hooks } from "../address-box/metaMask";
 
 
 const web3 = createAlchemyWeb3(
@@ -18,6 +20,7 @@ interface PayInstallmentProps {
   nftTokenId?: string;
   amount?: string;
   totalInstallment: number;
+  entryId: any;
   // image: string;
   // title: string;
   // remainingTime: string;
@@ -74,7 +77,8 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
   nftContractAddress,
   nftTokenId,
   amount,
-  totalInstallment
+  totalInstallment,
+  entryId
 }) => {
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
@@ -104,6 +108,17 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
     console.log(res,"cal amount",totalInstallment)
     // console.log((res / totalInstallment))
     return String(parseFloat(res) / totalInstallment)
+  }
+    
+  const {  useProvider } = hooks;
+  const provider = useProvider();
+  const handleSubmit = async () =>{
+    console.log("handle submit enrey ID", entryId)
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    await protocolContract.payInstallment(
+      entryId,
+      {gasLimit: 350000}
+    )
   }
 
   return (
@@ -178,7 +193,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
                 you may no longer have this nft
               </Typography>
 
-              <button style={buttonStyle}>
+              <button style={buttonStyle} onClick={handleSubmit}>
                 <Typography fontSize={20} color="Primary">
                   Pay Installment
                 </Typography>
