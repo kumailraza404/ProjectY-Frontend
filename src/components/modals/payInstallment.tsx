@@ -4,10 +4,23 @@ import NFT from "../../assets/nft2.png";
 import MaticLogo from "../../assets/matic.svg";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
+import { Contract, ethers } from "ethers";
+import { ABI, Address } from "../../constants";
+import { hooks } from "../address-box/metaMask";
 
+
+const web3 = createAlchemyWeb3(
+  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+);
 interface PayInstallmentProps {
   open: boolean;
   setOpen(value: boolean): void;
+  nftContractAddress?: string;
+  nftTokenId?: string;
+  amount?: string;
+  totalInstallment: number;
+  entryId: any;
   // image: string;
   // title: string;
   // remainingTime: string;
@@ -61,9 +74,52 @@ const bidInputStyle = {
 const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
   open,
   setOpen,
+  nftContractAddress,
+  nftTokenId,
+  amount,
+  totalInstallment,
+  entryId
 }) => {
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
+
+  const [nftImage, setNftImage] = React.useState("")
+  const [nftTitle, setNftTitle] = React.useState("")
+  
+  const getnftMetadata = async () =>{
+    
+    if(nftContractAddress){
+      console.log("getNFTmetadata running");
+      const nftMetadata = await web3.alchemy.getNftMetadata({contractAddress:nftContractAddress ? nftContractAddress : "" , 
+      tokenId:nftTokenId ? nftTokenId : ""}); 
+      console.log("nftMetadata", nftMetadata)
+      setNftTitle(nftMetadata.metadata?.title ?  nftMetadata.metadata?.title : "")
+      setNftImage(nftMetadata.metadata?.image ?  nftMetadata.metadata?.image : "")
+    } 
+    
+
+  }
+  React.useEffect(()=>{
+    getnftMetadata();
+  },[])
+
+  const getCalculatedAmount = (amount:any): string =>{
+    let res = ethers.utils.formatEther(String((parseInt(amount ? amount : "0",16))))
+    console.log(res,"cal amount",totalInstallment)
+    // console.log((res / totalInstallment))
+    return String(parseFloat(res) / totalInstallment)
+  }
+    
+  const {  useProvider } = hooks;
+  const provider = useProvider();
+  const handleSubmit = async () =>{
+    console.log("handle submit enrey ID", entryId)
+    const protocolContract = new Contract(Address, ABI, provider?.getSigner());
+    await protocolContract.payInstallment(
+      entryId,
+      {gasLimit: 350000}
+    )
+  }
 
   return (
     <div>
@@ -92,7 +148,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
             <Grid container item xs={12} md={7} flexDirection="column">
               <Typography fontSize={20} color="primary" mt={"40px"}>
                 Next Installment Pending{" "}
-                <span style={{ fontWeight: "700" }}>33 Matic</span>
+                <span style={{ fontWeight: "700" }}>{getCalculatedAmount(amount)} Matic</span>
               </Typography>
               <Grid container mt={"30px"}>
                 <Grid container item xs={12} md={3}>
@@ -137,7 +193,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
                 you may no longer have this nft
               </Typography>
 
-              <button style={buttonStyle}>
+              <button style={buttonStyle} onClick={handleSubmit}>
                 <Typography fontSize={20} color="Primary">
                   Pay Installment
                 </Typography>
@@ -152,7 +208,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
               alignContent="center"
               direction="column"
             >
-              <img src={NFT} style={{ height: "200px", width: "200px" }} />
+              <img src={nftImage} style={{ height: "200px", width: "200px" }} />
               <div
                 style={{
                   width: "200px",
@@ -161,7 +217,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
                 }}
               >
                 <Typography fontSize={20} color="primary" fontWeight={700}>
-                  Bored Ape
+                  {nftTitle}
                 </Typography>
               </div>
 

@@ -91,7 +91,6 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   setOpen,
   activeNFT,
 }) => {
-  console.log(activeNFT, "activeNFT");
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
 
@@ -104,7 +103,6 @@ const OpenForSell: React.FunctionComponent<OpenForSellProps> = ({
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
 
   const openForBidHandler = async () => {
-    console.log("chal ja bhai", activeNFT.id, Address);
     const approvalTx = await nftContract.approve(
       Address,
       parseInt(activeNFT.id),
