@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import { hooks } from "../../components/address-box/metaMask";
 
-import { Grid, Typography, Button } from "@mui/material";
-
-import NFT2 from "../../assets/nft2.png";
-import NFT3 from "../../assets/dummynft2.png";
+import { Grid, Button } from "@mui/material";
 
 import NftCard from "../../components/nft-card";
 
@@ -25,37 +21,6 @@ const buttonStyleNotSelected = {
   width: "90%",
   height: "40px",
 };
-
-const nfts = [
-  {
-    owner: "@Johnny",
-    bid: 0.1,
-    name: "Yellow Painting",
-    image: NFT3,
-    sold: false,
-  },
-  {
-    owner: "@Johnny",
-    bid: 0.1,
-    name: "Yellow Painting",
-    image: NFT2,
-    sold: true,
-  },
-  {
-    owner: "@Johnny",
-    bid: 0.1,
-    name: "Yellow Painting",
-    image: NFT3,
-    sold: false,
-  },
-  {
-    owner: "@Johnny",
-    bid: 0.1,
-    name: "Yellow Painting",
-    image: NFT2,
-    sold: false,
-  },
-];
 
 const MyBids = () => {
   const provider = useProvider();
@@ -93,11 +58,9 @@ const MyBids = () => {
       const totalBidIds = parseInt(await protocolContract.getTotalBidIds());
 
       const buyerInfoPromise = [];
-
       for (let i = 1; i <= totalBidIds; i++) {
         buyerInfoPromise.push(protocolContract.getBuyerInfo(i));
       }
-
       const buyerInfo = await Promise.all(buyerInfoPromise);
 
       const sentBidsResponse = buyerInfo.filter(
@@ -107,7 +70,27 @@ const MyBids = () => {
           bid.buyerAddress === accounts[0]
       );
 
-      setSentBids(sentBidsResponse);
+      console.log("kumail thand machao before ==>>", sentBidsResponse);
+
+      const sellerInfoPromise = [];
+      for (let i = 0; i < sentBidsResponse.length; i++) {
+        sellerInfoPromise.push(
+          protocolContract.getSellerInfo(parseInt(sentBidsResponse[i].entryId))
+        );
+      }
+      const sellerInfo = await Promise.all(sellerInfoPromise);
+
+      const SentBids = sentBidsResponse.map((elem, index) => {
+        return {
+          ...elem,
+          contractAddress: sellerInfo[index]["contractAddress"],
+          tokenId: sellerInfo[index]["tokenId"],
+        };
+      });
+
+      console.log("kumail thand machao after ==>>", SentBids);
+
+      setSentBids(SentBids);
     };
 
     getReceivedBids();
@@ -171,7 +154,7 @@ const MyBids = () => {
       </Grid>
       <Grid container item>
         {selectCollection === 0 &&
-          nfts.map((nft) => {
+          sentBids.map((nft) => {
             return (
               <Grid item xs={4} mt={5}>
                 <NftCard
@@ -179,6 +162,8 @@ const MyBids = () => {
                   bid={nft.bid}
                   name={nft.name}
                   image={nft.image}
+                  nftContractAddress={nft.contractAddress}
+                  nftTokenId={nft.tokenId}
                   buttonText={"Withdraw Bid"}
                   buttonAction={withdrawBid}
                   buttonDisabled={
