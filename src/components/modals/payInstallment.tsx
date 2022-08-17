@@ -117,7 +117,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
     const protocolContract = new Contract(Address, ABI, provider?.getSigner());
     await protocolContract.payInstallment(
       entryId,
-      {gasLimit: 350000}
+      {gasLimit: 350000, value: input}
     )
   }
 
