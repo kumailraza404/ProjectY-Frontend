@@ -106,6 +106,7 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
   const getCalculatedAmount = (amount:any): string =>{
     let res = ethers.utils.formatEther(String((parseInt(amount ? amount : "0",16))))
     console.log(res,"cal amount",totalInstallment)
+    console.log("eh")
     // console.log((res / totalInstallment))
     return String(parseFloat(res) / totalInstallment)
   }
