@@ -14,7 +14,7 @@ import { Network, Alchemy } from "@alch/alchemy-sdk";
 import PlaceBid, { BidsInterface } from "../modals/placeBid";
 
 const web3 = createAlchemyWeb3(
-  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://polygon-mumbai.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 interface NFTCardProps {
   owner: string;
