@@ -19,7 +19,7 @@ import { promises } from "stream";
 const { useAccounts, useIsActive, useProvider } = hooks;
 
 const web3 = createAlchemyWeb3(
-  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://polygon-mumbai.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 
 const buttonStyleSelected = {
@@ -40,7 +40,7 @@ const MyNfts = () => {
   const [selectCollection, setSelectCollection] = useState(0);
   const [userListedNFT, setUserListedNFT] = useState<any[]>([]);
   const [userClaimedNFT, setUserClaimedNFT] = useState<any[]>([]);
-  const [entryIdList,setEntryIdList] = useState<any[]>([]);
+  const [entryIdList, setEntryIdList] = useState<any[]>([]);
 
   const provider = useProvider();
   const handleSelection = (index: number) => {
@@ -68,6 +68,7 @@ const MyNfts = () => {
         owner: accounts[0],
       });
 
+      console.log("hiii", nfts.ownedNfts);
       setNftsOwned(nfts.ownedNfts);
     }
   };
@@ -99,37 +100,45 @@ const MyNfts = () => {
         accounts && bid.isSelected === true && bid.buyerAddress === accounts[0]
     );
 
-    const allEntryIds:any = [];
+    const allEntryIds: any = [];
     const sellerInfoPromise = [];
-    const result:any = []
+    const result: any = [];
     // console.log(claimedNfts,"yeh wale nft jo ke claim ka re")
-    for(let i = 0; i < claimedNfts.length; i++){
-      console.log(claimedNfts[i],"i==>",i)
-      allEntryIds.push(claimedNfts[i].entryId._hex)
-      sellerInfoPromise.push(protocolContract.getSellerInfo(claimedNfts[i].entryId._hex)) 
+    for (let i = 0; i < claimedNfts.length; i++) {
+      console.log(claimedNfts[i], "i==>", i);
+      allEntryIds.push(claimedNfts[i].entryId._hex);
+      sellerInfoPromise.push(
+        protocolContract.getSellerInfo(claimedNfts[i].entryId._hex)
+      );
     }
     const res = await Promise.all(sellerInfoPromise);
-    console.log(res,"thos resultoan")
+    console.log(res, "thos resultoan");
     setEntryIdList(allEntryIds);
     setUserClaimedNFT(res);
   };
-
 
   const [activeTokenId, setActiveTokenId] = useState<any>();
   const [activeContractAddress, setActiveContractAddress] = useState<any>();
   const [activeAmount, setActiveAmount] = useState<any>();
   const [activeTotalInstallment, setActiveTotalInstallment] = useState<any>();
-  const [activeEntryId, setActiveEntryId] = useState<any>(); 
+  const [activeEntryId, setActiveEntryId] = useState<any>();
 
-  const openPayInstallmentModal = (a:any,c:any,tId:any,i:any,ip:any,eId:any) => {
+  const openPayInstallmentModal = (
+    a: any,
+    c: any,
+    tId: any,
+    i: any,
+    ip: any,
+    eId: any
+  ) => {
     setActiveTokenId(tId);
     setActiveContractAddress(c);
     setActiveAmount(a);
     setOpenInstallmentModal(true);
-    console.log(i,ip,"total ins")
-    let totalInstallment = parseInt(i) + parseInt(ip)
+    console.log(i, ip, "total ins");
+    let totalInstallment = parseInt(i) + parseInt(ip);
     setActiveEntryId(eId);
-    setActiveTotalInstallment(totalInstallment)
+    setActiveTotalInstallment(totalInstallment);
   };
 
   const [activeNFT, setActiveNFT] = useState({
@@ -153,7 +162,6 @@ const MyNfts = () => {
     setActiveNFT(stateActiveNFT);
     setOpenForSellModal(true);
   };
-
 
   if (!isActive) {
     return <WalletNotConnected />;
@@ -201,8 +209,7 @@ const MyNfts = () => {
         </Grid>
         <Grid container item>
           {selectCollection === 0 &&
-            userClaimedNFT.map((nft:any, index:number) => 
-            {
+            userClaimedNFT.map((nft: any, index: number) => {
               return (
                 <Grid item xs={4} mt={5}>
                   <NftCard
@@ -211,8 +218,16 @@ const MyNfts = () => {
                     name={nft.name}
                     image={nft.image}
                     buttonText={"Pay Installment"}
-                    buttonAction={()=>openPayInstallmentModal(nft.sellingPrice._hex,nft.contractAddress,
-                      nft.tokenId,nft.installment,nft.installmentsPaid, entryIdList[index])}
+                    buttonAction={() =>
+                      openPayInstallmentModal(
+                        nft.sellingPrice._hex,
+                        nft.contractAddress,
+                        nft.tokenId,
+                        nft.installment,
+                        nft.installmentsPaid,
+                        entryIdList[index]
+                      )
+                    }
                     nftContractAddress={nft.contractAddress}
                     nftTokenId={nft.tokenId}
                   />

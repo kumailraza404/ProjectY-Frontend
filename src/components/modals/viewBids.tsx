@@ -15,7 +15,7 @@ import {
 import { ethers } from "ethers";
 
 const web3 = createAlchemyWeb3(
-  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://polygon-mumbai.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 interface ViewBidsProps {
   open: boolean;
@@ -24,7 +24,7 @@ interface ViewBidsProps {
   tokenId: any;
   image: any;
   name: any;
-  entryId:any;
+  entryId: any;
 }
 
 const ON_GOING_BIDS_DATA = [
@@ -85,47 +85,39 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
   tokenId,
   image,
   name,
-  entryId
+  entryId,
 }) => {
-  const {useProvider} = hooks;
+  const { useProvider } = hooks;
   const provider = useProvider();
   const protocolContract = new Contract(Address, ABI, provider?.getSigner());
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
   const [bids, setBids] = React.useState<any>();
-  const [bidIds,setBidIds] = React.useState<any>();
+  const [bidIds, setBidIds] = React.useState<any>();
   const [nftImage, setNftImage] = React.useState("");
   const [nftName, setNftName] = React.useState("");
 
-
   const [selectBid, setSelectBid] = React.useState("");
 
-
-  const getMetaData = async () =>{
-
+  const getMetaData = async () => {
     const nftMetadata = await web3.alchemy.getNftMetadata({
-        contractAddress: contractAddress,
-        tokenId: tokenId,
-      });
-      setNftImage(
-        nftMetadata.metadata?.image ? nftMetadata.metadata?.image : ""
-      );
-      setNftName(nftMetadata.title);
-  }
+      contractAddress: contractAddress,
+      tokenId: tokenId,
+    });
+    setNftImage(nftMetadata.metadata?.image ? nftMetadata.metadata?.image : "");
+    setNftName(nftMetadata.title);
+  };
 
-
-  
-  const handleBidSelect =  (bid:any) =>{
+  const handleBidSelect = (bid: any) => {
     const index = bids.indexOf(bid);
-    setSelectBid(parseInt(bidIds[index]._hex, 16).toString())
-  }
+    setSelectBid(parseInt(bidIds[index]._hex, 16).toString());
+  };
 
-  const handleSubmitBid = async () =>{
-    const submitBid = await protocolContract.selectBid(
-      selectBid,
-      {gasLimit: 350000}
-      )
-  }
+  const handleSubmitBid = async () => {
+    const submitBid = await protocolContract.selectBid(selectBid, {
+      gasLimit: 350000,
+    });
+  };
 
   const getAllBids = async () => {
     const id = parseInt(entryId, 16);
@@ -136,7 +128,6 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
     setBids(bids.allBidsOnNFT_);
     setBidIds(bids.bidIds_);
   };
-  
 
   React.useEffect(() => {
     getAllBids();
@@ -191,9 +182,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                 </Typography>
               </Grid>
 
-
-              {
-                bids &&
+              {bids &&
                 bids
                   .filter(
                     (bid: any) =>
@@ -210,7 +199,7 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                           marginTop: "-8px",
                           marginLeft: "8px",
                         }}
-                        onClick={()=>handleBidSelect(bid)}
+                        onClick={() => handleBidSelect(bid)}
                       />
                       <Typography fontSize={16} color="primary">
                         {index}
@@ -227,9 +216,8 @@ const ViewBids: React.FunctionComponent<ViewBidsProps> = ({
                         )}
                       </Typography>
                     </Grid>
-                  ))
-              }
-              
+                  ))}
+
               <Box
                 fontSize={20}
                 sx={{ color: "white", textAlign: "center", margin: "16px 0px" }}

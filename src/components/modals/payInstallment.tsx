@@ -9,9 +9,8 @@ import { Contract, ethers } from "ethers";
 import { ABI, Address } from "../../constants";
 import { hooks } from "../address-box/metaMask";
 
-
 const web3 = createAlchemyWeb3(
-  "https://eth-rinkeby.alchemyapi.io/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
+  "https://polygon-mumbai.g.alchemy.com/v2/38niqT-HbTmDsjLdh597zVlW0c94wp0v"
 );
 interface PayInstallmentProps {
   open: boolean;
@@ -78,48 +77,50 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
   nftTokenId,
   amount,
   totalInstallment,
-  entryId
+  entryId,
 }) => {
   const handleClose = () => setOpen(false);
   const [input, setInput] = React.useState("");
 
-  const [nftImage, setNftImage] = React.useState("")
-  const [nftTitle, setNftTitle] = React.useState("")
-  
-  const getnftMetadata = async () =>{
-    
-    if(nftContractAddress){
+  const [nftImage, setNftImage] = React.useState("");
+  const [nftTitle, setNftTitle] = React.useState("");
+
+  const getnftMetadata = async () => {
+    if (nftContractAddress) {
       console.log("getNFTmetadata running");
-      const nftMetadata = await web3.alchemy.getNftMetadata({contractAddress:nftContractAddress ? nftContractAddress : "" , 
-      tokenId:nftTokenId ? nftTokenId : ""}); 
-      console.log("nftMetadata", nftMetadata)
-      setNftTitle(nftMetadata.metadata?.title ?  nftMetadata.metadata?.title : "")
-      setNftImage(nftMetadata.metadata?.image ?  nftMetadata.metadata?.image : "")
-    } 
-    
-
-  }
-  React.useEffect(()=>{
+      const nftMetadata = await web3.alchemy.getNftMetadata({
+        contractAddress: nftContractAddress ? nftContractAddress : "",
+        tokenId: nftTokenId ? nftTokenId : "",
+      });
+      console.log("nftMetadata", nftMetadata);
+      setNftTitle(
+        nftMetadata.metadata?.title ? nftMetadata.metadata?.title : ""
+      );
+      setNftImage(
+        nftMetadata.metadata?.image ? nftMetadata.metadata?.image : ""
+      );
+    }
+  };
+  React.useEffect(() => {
     getnftMetadata();
-  },[])
+  }, []);
 
-  const getCalculatedAmount = (amount:any): string =>{
-    let res = ethers.utils.formatEther(String((parseInt(amount ? amount : "0",16))))
-    console.log(res,"cal amount",totalInstallment)
+  const getCalculatedAmount = (amount: any): string => {
+    let res = ethers.utils.formatEther(
+      String(parseInt(amount ? amount : "0", 16))
+    );
+    console.log(res, "cal amount", totalInstallment);
     // console.log((res / totalInstallment))
-    return String(parseFloat(res) / totalInstallment)
-  }
-    
-  const {  useProvider } = hooks;
+    return String(parseFloat(res) / totalInstallment);
+  };
+
+  const { useProvider } = hooks;
   const provider = useProvider();
-  const handleSubmit = async () =>{
-    console.log("handle submit enrey ID", entryId)
+  const handleSubmit = async () => {
+    console.log("handle submit enrey ID", entryId);
     const protocolContract = new Contract(Address, ABI, provider?.getSigner());
-    await protocolContract.payInstallment(
-      entryId,
-      {gasLimit: 350000}
-    )
-  }
+    await protocolContract.payInstallment(entryId, { gasLimit: 350000 });
+  };
 
   return (
     <div>
@@ -148,7 +149,9 @@ const PayInstallment: React.FunctionComponent<PayInstallmentProps> = ({
             <Grid container item xs={12} md={7} flexDirection="column">
               <Typography fontSize={20} color="primary" mt={"40px"}>
                 Next Installment Pending{" "}
-                <span style={{ fontWeight: "700" }}>{getCalculatedAmount(amount)} Matic</span>
+                <span style={{ fontWeight: "700" }}>
+                  {getCalculatedAmount(amount)} Matic
+                </span>
               </Typography>
               <Grid container mt={"30px"}>
                 <Grid container item xs={12} md={3}>
